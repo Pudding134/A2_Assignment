@@ -6,15 +6,11 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
@@ -22,9 +18,13 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import java.io.*;
 import java.util.ArrayList;
 
 public class Client extends Application {
+
+    private static Magazine magazine = new Magazine();
+
     @Override
     public void start(Stage stage) throws Exception {
         //1) set up the stage
@@ -37,6 +37,16 @@ public class Client extends Application {
         //stage-program icon setting
         Image systemIcon = new Image("MagazineIcon.jpg");
         stage.getIcons().add(systemIcon);
+        //initial loading scene setup
+        Button loadSavedData = new Button("Load Existing Data");
+        loadSavedData.setMinSize(100,100);
+        Button newDataCreation = new Button("Create a new Magazine");
+        newDataCreation.setMinSize(100,100);
+        VBox initialScreenChoice = new VBox(loadSavedData, newDataCreation);
+        initialScreenChoice.setAlignment(Pos.CENTER);
+        initialScreenChoice.setSpacing(80);
+        Scene loadingScene = new Scene(initialScreenChoice, 400,400, Color.DARKGOLDENROD);
+
 
         //2)Set up the scene and scene graph
         //set up a root node that store all the common to all 3 scene properties (reduce adding)
@@ -111,8 +121,6 @@ public class Client extends Application {
 
         //set up the List of supplement (Observable = it will update with changes - think of it as a pointer, reflecting with changes to original object)
         ObservableList<Supplement> supplementList = FXCollections.observableArrayList();
-        supplementList.add(new Supplement("Earth Geography", 2));
-        supplementList.add(new Supplement("Animal Geography", 5));
         ListView<Supplement> supplementListView = new ListView<>(supplementList);
         supplementListView.setCellFactory(param -> new ListCell<Supplement>() {
             @Override
@@ -156,11 +164,20 @@ public class Client extends Application {
         tempSupplementList.add(new Supplement("Animal Geography", 5));
         customersList.add(new PayingCustomer("Willie", "williecwy134@gmail.com",91 , " Jones Street" , "Sydney",2091, "Debit",tempSupplementList,tempListofAssociateCustomer));
         customersList.add(new associateCustomer("Stella", "Stella@Gmail.com",81 ," Jones Street" , "Sydney",2081));
-        /*for(Customer customer: customersList){
+        ArrayList<PayingCustomer> tempPayingCustomer = new ArrayList<>();
+        tempPayingCustomer.add(new PayingCustomer("Willie", "williecwy134@gmail.com",91 , " Jones Street" , "Sydney",2091, "Debit",tempSupplementList,tempListofAssociateCustomer));
+        magazine.setNameOfMagazine("National Geography");
+        magazine.setWeeklyCostOfMagazine(50);
+        magazine.setListOfSupplementMagazines(tempSupplementList);
+        magazine.setListOfPayingCustomer(tempPayingCustomer);
+        //function to pull out all associate customer under each paying customer
+        //add all customer to the observable list
+        for(Customer customer: tempPayingCustomer){
             if(customer instanceof PayingCustomer && ((PayingCustomer) customer).getListOfAssociateCustomer().size()>0){
                 customersList.addAll(((PayingCustomer) customer).getListOfAssociateCustomer());
             }
-        }*/
+        }
+        //load observable list of customer to the list view
         ListView<Customer> customersListView = new ListView<>(customersList);
         customersListView.setCellFactory(param -> new ListCell<Customer>() {
             @Override
@@ -226,8 +243,24 @@ public class Client extends Application {
 
         //Adding the format into the scene using the loader object.load() method along with the width and height.
         //Scene scene = new Scene(fxmlLoader.load(), 320, 240);
-        stage.setScene(viewScene);
+        stage.setScene(loadingScene);
         stage.show();
+        loadSavedData.setOnMouseClicked(event -> {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Load data");
+            alert.setHeaderText("Do you want to load save data?");
+            //alert.setContentText("Do you want to save before exiting?");
+
+            if (alert.showAndWait().get() == ButtonType.OK){
+                loadData();
+                //saveData();
+                extractSupplementList(supplementList);
+                stage.setScene(viewScene);
+            }else{
+                event.consume();
+            }
+            System.out.println("Name of magazine from top = " + magazine.getNameOfMagazine());
+        });
 
         stage.setOnCloseRequest(event -> {
             event.consume();
@@ -237,6 +270,84 @@ public class Client extends Application {
 
     public static void main(String[] args) {
         launch();
+    }
+
+
+    /**
+     * This method is conduct the deserialization of saved magazine and related data from previous instance
+     * <p>
+     * Precondition: Nil <br>
+     * Postcondition: All previous magazine data are loaded into the magazine
+     */
+    public static void loadData() {
+        //Testing out deserialization
+        System.out.println("Initializing Data reading from existing save file....");
+        Magazine tempMagazine = null;
+        try {
+            //read file contain object byte stream data
+            FileInputStream fileIn = new FileInputStream("MagazineSaveData.ser");
+            //read object byte stream data in file
+            ObjectInputStream objectIn = new ObjectInputStream(fileIn);
+            //load it into the temporary array list while casting the object type
+            tempMagazine = (Magazine) objectIn.readObject();
+            magazine = tempMagazine;
+
+            System.out.println("Name of temp magazine read = " + tempMagazine.getNameOfMagazine());
+            System.out.println("Name of actual magazine read =" + magazine.getNameOfMagazine());
+
+            objectIn.close();
+            fileIn.close();
+        } catch (IOException io) {
+            System.out.println("Error in reading Save file");
+        } catch (ClassNotFoundException CE) {
+            System.out.println("Class Not Found Exception found");
+        }
+
+        System.out.println("Data reading from existing save file COMPLETED!");
+        //System.out.println("Number of Magazine entries loaded = " + listOfMagazine.size());
+        try {
+            if (magazine.getNameOfMagazine().length() > 0) {
+                System.out.println("Name of magazines read from the file: ");
+                System.out.println();
+            }
+        }catch (NullPointerException NE){
+            System.out.println("No data loaded from the save file");
+            System.out.println();
+        }
+        System.out.println();
+        //transfer the array list from the temporary to the main one use by the entire program
+        //FinalListOfMagazine = listOfMagazine;
+    }
+
+
+    private static void extractSupplementList(ObservableList<Supplement> listOfSupplement){
+        if(magazine.getListOfSupplementMagazines().size() > 0){
+            for(Supplement supplement: magazine.getListOfSupplementMagazines()){
+                listOfSupplement.addAll(supplement);
+            }
+        }
+    }
+
+    /**
+     * This method is conduct the serialization of all magazine and related data from current running instance
+     * <p>
+     * Precondition: Nil <br>
+     * Postcondition: All current and latest magazine data in the array list are saved into the object file.
+     */
+    public static void saveData(){
+        System.out.println("Initializing Data saving");
+        try{
+            FileOutputStream fileOut = new FileOutputStream("MagazineSaveData.ser");
+            ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
+
+            objectOut.writeObject(magazine);
+            objectOut.close();
+            fileOut.close();
+            System.out.println("Data saving completed");
+
+        }catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
 
@@ -252,4 +363,8 @@ public class Client extends Application {
         }
     }
 
+
+    private static void hardcodeSetupData(){
+
+    }
 }
