@@ -11,6 +11,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
@@ -19,7 +20,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.*;
-import java.util.ArrayList;
 
 public class Client extends Application {
 
@@ -156,27 +156,6 @@ public class Client extends Application {
 
         //Set up the list of customers
         ObservableList<Customer> customersList = FXCollections.observableArrayList();
-        associateCustomer tempAssociate = new associateCustomer("Eunice", "Eunice@Gmail.com",71, " Jones Street" , "Sydney",2071);
-        ArrayList<associateCustomer> tempListofAssociateCustomer = new ArrayList<associateCustomer>();
-        tempListofAssociateCustomer.add(tempAssociate);
-        ArrayList<Supplement> tempSupplementList = new ArrayList<>();
-        tempSupplementList.add(new Supplement("Earth Geography", 2));
-        tempSupplementList.add(new Supplement("Animal Geography", 5));
-        customersList.add(new PayingCustomer("Willie", "williecwy134@gmail.com",91 , " Jones Street" , "Sydney",2091, "Debit",tempSupplementList,tempListofAssociateCustomer));
-        customersList.add(new associateCustomer("Stella", "Stella@Gmail.com",81 ," Jones Street" , "Sydney",2081));
-        ArrayList<PayingCustomer> tempPayingCustomer = new ArrayList<>();
-        tempPayingCustomer.add(new PayingCustomer("Willie", "williecwy134@gmail.com",91 , " Jones Street" , "Sydney",2091, "Debit",tempSupplementList,tempListofAssociateCustomer));
-        magazine.setNameOfMagazine("National Geography");
-        magazine.setWeeklyCostOfMagazine(50);
-        magazine.setListOfSupplementMagazines(tempSupplementList);
-        magazine.setListOfPayingCustomer(tempPayingCustomer);
-        //function to pull out all associate customer under each paying customer
-        //add all customer to the observable list
-        for(Customer customer: tempPayingCustomer){
-            if(customer instanceof PayingCustomer && ((PayingCustomer) customer).getListOfAssociateCustomer().size()>0){
-                customersList.addAll(((PayingCustomer) customer).getListOfAssociateCustomer());
-            }
-        }
         //load observable list of customer to the list view
         ListView<Customer> customersListView = new ListView<>(customersList);
         customersListView.setCellFactory(param -> new ListCell<Customer>() {
@@ -238,35 +217,135 @@ public class Client extends Application {
         viewSceneObj.getChildren().add(line4);
 
 
-        //loading the set up from FXML into the FXMLLoader object
-        //FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
 
-        //Adding the format into the scene using the loader object.load() method along with the width and height.
-        //Scene scene = new Scene(fxmlLoader.load(), 320, 240);
-        stage.setScene(loadingScene);
-        stage.show();
+
+        //setting up create scene
+        //add all view scene exclusive item to this node
+        Group createSceneObj = new Group();
+        //create scene with root node
+        Label labelToDisplayMsg = new Label();
+        labelToDisplayMsg.setFont(Font.font("Verdana", 16));
+        Label magazineName = new Label("Magazine Name");
+        TextField magazineNameField = new TextField("");
+        Label magazineCost = new Label("Magazine Weekly Cost");
+        TextField magazineCostField = new TextField("");
+        Button createSubmitButton = new Button("Submit");
+        HBox magazineNameLevel = new HBox(magazineName,magazineNameField);
+        magazineNameLevel.setSpacing(56);
+        HBox magazineCostLevel = new HBox(magazineCost, magazineCostField);
+        magazineCostLevel.setSpacing(20);
+
+        VBox createSequence=new VBox(labelToDisplayMsg, magazineNameLevel,magazineCostLevel, createSubmitButton);
+        createSequence.setSpacing(40);
+        createSceneObj.getChildren().add(createSequence);
+        Scene createScene = new Scene(createSceneObj,400,400, Color.DARKSEAGREEN);
+
+
+
+
+
+
+
+
+
         loadSavedData.setOnMouseClicked(event -> {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Load data");
-            alert.setHeaderText("Do you want to load save data?");
+            Alert loadAlert = new Alert(Alert.AlertType.CONFIRMATION);
+            loadAlert.setTitle("Load data");
+            loadAlert.setHeaderText("Do you want to load save data?");
             //alert.setContentText("Do you want to save before exiting?");
 
-            if (alert.showAndWait().get() == ButtonType.OK){
+            if (loadAlert.showAndWait().get() == ButtonType.OK){
                 loadData();
                 //saveData();
                 extractSupplementList(supplementList);
-                stage.setScene(viewScene);
+                extractCustomerList(customersList);
+                stage.setScene(viewScene); //switch scene once data loaded
+                System.out.println("Name of magazine from top = " + magazine.getNameOfMagazine()); //testing purpose, to test if it got pass back to the calling function
             }else{
                 event.consume();
             }
-            System.out.println("Name of magazine from top = " + magazine.getNameOfMagazine());
+        });
+
+        newDataCreation.setOnMouseClicked(event -> {
+            Alert createAlert = new Alert(Alert.AlertType.CONFIRMATION);
+            createAlert.setTitle("Confirmation to proceed");
+            createAlert.setHeaderText("Proceed with creating a new magazine??");
+            //alert.setContentText("Do you want to save before exiting?");
+
+            if (createAlert.showAndWait().get() == ButtonType.OK){
+                stage.setScene(createScene);
+                System.out.println("Name of magazine from top = " + magazine.getNameOfMagazine()); //testing purpose, to test if it got pass back to the calling function
+            }else{
+                event.consume();
+            }
+
+        });
+
+        view.setOnMouseClicked(event -> {
+            stage.setScene(viewScene); //switch to "view" scene
+        });
+
+        create.setOnMouseClicked(event -> {
+            stage.setScene(createScene); //switch to "create" scene
+        });
+
+        createSubmitButton.setOnMouseClicked(event -> {
+            boolean toProceed = false;
+            toProceed = createMagazineSubmit(labelToDisplayMsg, magazineNameField, magazineCostField);
+            if(toProceed){
+                System.out.println("Proceed successful");
+                System.out.println("Created magazine name = " + magazine.getNameOfMagazine());
+                System.out.println("Created magazine cost = " + magazine.getWeeklyCostOfMagazine());
+
+                extractSupplementList(supplementList);
+                extractCustomerList(customersList);
+                stage.setScene(viewScene);
+            }else{
+                System.out.println("Proceed failed");
+            }
         });
 
         stage.setOnCloseRequest(event -> {
             event.consume();
             logout(stage);
         });
+
+        stage.setScene(loadingScene);
+        stage.show();
     }
+
+
+
+
+
+
+        public boolean createMagazineSubmit(Label msgToDisplay, TextField magazineNameField, TextField magazineCostField) {
+            int magazineCost;
+            try {
+                magazineCost = Integer.parseInt(magazineCostField.getText());
+
+                if(magazineNameField.getText().trim().isEmpty()){
+                    msgToDisplay.setText("Magazine Name cannot be empty");
+                }
+                if (magazineCost <= 0) {
+                    msgToDisplay.setText("Cost of magazine must be more than $0");
+                }
+                if(!magazineNameField.getText().trim().isEmpty() && magazineCost > 0){
+                    System.out.println("Create committed");
+                    magazine.setNameOfMagazine(magazineNameField.getText());
+                    magazine.setWeeklyCostOfMagazine(magazineCost);
+                    return true;
+                }
+            } catch (NumberFormatException e) {
+                msgToDisplay.setText("Enter only numbers in Magazine Cost Field");
+            } catch (Exception e) {
+                msgToDisplay.setText("error");
+            }
+            return false;
+        }
+
+
+
 
     public static void main(String[] args) {
         launch();
@@ -282,21 +361,16 @@ public class Client extends Application {
     public static void loadData() {
         //Testing out deserialization
         System.out.println("Initializing Data reading from existing save file....");
-        Magazine tempMagazine = null;
         try {
             //read file contain object byte stream data
             FileInputStream fileIn = new FileInputStream("MagazineSaveData.ser");
             //read object byte stream data in file
             ObjectInputStream objectIn = new ObjectInputStream(fileIn);
             //load it into the temporary array list while casting the object type
-            tempMagazine = (Magazine) objectIn.readObject();
-            magazine = tempMagazine;
-
-            System.out.println("Name of temp magazine read = " + tempMagazine.getNameOfMagazine());
-            System.out.println("Name of actual magazine read =" + magazine.getNameOfMagazine());
-
+            magazine = (Magazine) objectIn.readObject();
             objectIn.close();
             fileIn.close();
+            System.out.println("Name of actual magazine read =" + magazine.getNameOfMagazine());
         } catch (IOException io) {
             System.out.println("Error in reading Save file");
         } catch (ClassNotFoundException CE) {
@@ -327,6 +401,22 @@ public class Client extends Application {
             }
         }
     }
+
+
+    private static void extractCustomerList(ObservableList<Customer> listOfCustomer){
+        if(magazine.getListOfPayingCustomer().size() > 0){
+            for(Customer customer: magazine.getListOfPayingCustomer()){
+                if(customer instanceof PayingCustomer){
+                    listOfCustomer.add(customer);
+                    System.out.println(customer.getCustomerName());
+                }
+                if(customer instanceof PayingCustomer && ((PayingCustomer) customer).getListOfAssociateCustomer().size()>0){
+                    listOfCustomer.addAll(((PayingCustomer) customer).getListOfAssociateCustomer());
+                }
+            }
+        }
+    }
+
 
     /**
      * This method is conduct the serialization of all magazine and related data from current running instance
@@ -364,7 +454,4 @@ public class Client extends Application {
     }
 
 
-    private static void hardcodeSetupData(){
-
-    }
 }
