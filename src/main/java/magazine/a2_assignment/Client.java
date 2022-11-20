@@ -6,6 +6,8 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -20,6 +22,9 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.*;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.ResourceBundle;
 
 public class Client extends Application {
 
@@ -29,23 +34,25 @@ public class Client extends Application {
     public void start(Stage stage) throws Exception {
         //1) set up the stage
         stage.setTitle("Magazine Management System");
-        stage.setWidth(400);
-        stage.setHeight(400);
+        stage.setWidth(800);
+        stage.setHeight(800);
         stage.setX(1052);
-        stage.setY(650);
+        stage.setY(100);
+        stage.setResizable(false);
+
 
         //stage-program icon setting
         Image systemIcon = new Image("MagazineIcon.jpg");
         stage.getIcons().add(systemIcon);
         //initial loading scene setup
         Button loadSavedData = new Button("Load Existing Data");
-        loadSavedData.setMinSize(100,100);
+        loadSavedData.setMinSize(200,200);
         Button newDataCreation = new Button("Create a new Magazine");
-        newDataCreation.setMinSize(100,100);
+        newDataCreation.setMinSize(200,200);
         VBox initialScreenChoice = new VBox(loadSavedData, newDataCreation);
         initialScreenChoice.setAlignment(Pos.CENTER);
         initialScreenChoice.setSpacing(80);
-        Scene loadingScene = new Scene(initialScreenChoice, 400,400, Color.DARKGOLDENROD);
+        Scene loadingScene = new Scene(initialScreenChoice, Color.DARKSEAGREEN);
 
 
         //2)Set up the scene and scene graph
@@ -55,11 +62,11 @@ public class Client extends Application {
         Group viewSceneObj = new Group();
         viewSceneObj.getChildren().add(root);
         //create scene with root node
-        Scene viewScene = new Scene(viewSceneObj,400,400, Color.DARKSEAGREEN);
+        Scene viewScene = new Scene(viewSceneObj, Color.DARKSEAGREEN);
 
         //set up and add menu bar to root
         Text header = new Text("Magazine Services");
-        header.setX(80);
+        header.setX(280);
         header.setY(28);
         header.setFont(Font.font("Verdana", 25));
         header.setFill(Color.DARKCYAN);
@@ -74,7 +81,7 @@ public class Client extends Application {
         Line line = new Line();
         line.setStartX(0.0);
         line.setStartY(40.0);
-        line.setEndX(400.0);
+        line.setEndX(800.0);
         line.setEndY(40.0);
         line.setStrokeWidth(4);
         line.setStroke(Color.gray(0.3));
@@ -92,12 +99,13 @@ public class Client extends Application {
         sceneChooser.getButtons().addAll(view,create,edit);
         sceneChooser.setLayoutX(60);
         sceneChooser.setLayoutY(50);
+        sceneChooser.setButtonMinWidth(200);
         root.getChildren().add(sceneChooser);
         //Creating a line object
         Line line2 = new Line();
         line2.setStartX(0.0);
         line2.setStartY(90);
-        line2.setEndX(400.0);
+        line2.setEndX(800.0);
         line2.setEndY(90);
         line2.setStrokeWidth(4);
         line2.setStroke(Color.gray(0.3));
@@ -107,7 +115,7 @@ public class Client extends Application {
         //create the information panel and it's respective label
         VBox infoPanel = new VBox();
         Label infoPanelTitle = new Label("Information Panel:");
-        infoPanelTitle.setFont(Font.font("Verdana", 16));
+        infoPanelTitle.setFont(Font.font("Verdana", 26));
         infoPanelTitle.setUnderline(true);
         Label selectedItem1stProperty = new Label();
         Label selectedItem2ndProperty = new Label();
@@ -115,9 +123,21 @@ public class Client extends Application {
         Label selectedItem4thProperty = new Label();
         Label selectedItem5thProperty = new Label();
         Label selectedItem6thProperty = new Label();
+        Label selectedItemProperty7 = new Label();
+        Label selectedItemProperty8 = new Label();
+
+        selectedItem1stProperty.setFont(Font.font("Verdana", 18));
+        selectedItem2ndProperty.setFont(Font.font("Verdana", 18));
+        selectedItem3rdProperty.setFont(Font.font("Verdana", 18));
+        selectedItem4thProperty.setFont(Font.font("Verdana", 18));
+        selectedItem5thProperty.setFont(Font.font("Verdana", 18));
+        selectedItem6thProperty.setFont(Font.font("Verdana", 18));
+        selectedItemProperty7.setFont(Font.font("Verdana", 18));
+        selectedItemProperty8.setFont(Font.font("Verdana", 18));
         infoPanel.setAlignment(Pos.TOP_LEFT);
-        infoPanel.setLayoutX(204);
+        infoPanel.setLayoutX(312);
         infoPanel.setLayoutY(100);
+
 
         //set up the List of supplement (Observable = it will update with changes - think of it as a pointer, reflecting with changes to original object)
         ObservableList<Supplement> supplementList = FXCollections.observableArrayList();
@@ -144,14 +164,17 @@ public class Client extends Application {
                 selectedItem4thProperty.setText("");
                 selectedItem5thProperty.setText("");
                 selectedItem6thProperty.setText("");
+                //selectedItemProperty7.setText("");
+                //selectedItemProperty8.setText("");
+
             }});
-        supplementListView.setPrefHeight(140);
-        supplementListView.setPrefWidth(200);
+        supplementListView.setPrefHeight(348);
+        supplementListView.setPrefWidth(308);
         supplementListView.setLayoutX(0);
         supplementListView.setLayoutY(94);
         supplementListView.setOpacity(0.8);
         viewSceneObj.getChildren().add(supplementListView);
-        infoPanel.getChildren().addAll(infoPanelTitle, selectedItem1stProperty,selectedItem2ndProperty,selectedItem3rdProperty,selectedItem4thProperty,selectedItem5thProperty,selectedItem6thProperty);
+        infoPanel.getChildren().addAll(infoPanelTitle, selectedItem1stProperty,selectedItem2ndProperty,selectedItem3rdProperty,selectedItem4thProperty,selectedItem5thProperty,selectedItem6thProperty, selectedItemProperty7, selectedItemProperty8);
         viewSceneObj.getChildren().add(infoPanel);
 
         //Set up the list of customers
@@ -162,7 +185,6 @@ public class Client extends Application {
             @Override
             protected void updateItem(Customer item, boolean empty) {
                 super.updateItem(item, empty);
-
                 if (empty || item == null || item.getCustomerName() == null) {
                     setText(null);
                 } else {
@@ -170,6 +192,7 @@ public class Client extends Application {
                 }
             }
         });
+
         customersListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Customer>() {
             @Override
             public void changed(ObservableValue<? extends Customer> observableValue, Customer customer, Customer t1) {
@@ -185,12 +208,23 @@ public class Client extends Application {
                 }else{
                     selectedItem5thProperty.setText("Associate Customer");
                 }
-                selectedItem6thProperty.setText("");
+                selectedItem6thProperty.setText("aa");
+                //selectedItemProperty7.setText("Empty");
+                //selectedItemProperty8.setText("Empty");
+                if(currentCustomer.getCustomerInterestedSupplement().size()==1){
+                    selectedItemProperty7.setText(currentCustomer.getCustomerInterestedSupplement().get(0).getNameOfSupplement());
+                }if(currentCustomer.getCustomerInterestedSupplement().size()==2){
+                    selectedItemProperty8.setText(currentCustomer.getCustomerInterestedSupplement().get(1).getNameOfSupplement());
+                }else{
+                    selectedItemProperty7.setText("Empty");
+                    selectedItemProperty8.setText("Empty");
+                }
+
             }});
-        customersListView.setPrefHeight(140);
-        customersListView.setPrefWidth(200);
+        customersListView.setPrefHeight(348);
+        customersListView.setPrefWidth(308);
         customersListView.setLayoutX(0);
-        customersListView.setLayoutY(244);
+        customersListView.setLayoutY(446);
         customersListView.setOpacity(0.8);
         viewSceneObj.getChildren().add(customersListView); //add to viewSceneExclusive node
 
@@ -198,19 +232,19 @@ public class Client extends Application {
         //set up line to separate both list
         Line line3 = new Line();
         line3.setStartX(0.0);
-        line3.setStartY(240);
-        line3.setEndX(200.0);
-        line3.setEndY(240);
+        line3.setStartY(444);
+        line3.setEndX(308);
+        line3.setEndY(444);
         line3.setStrokeWidth(4);
         line3.setStroke(Color.gray(0.3));
         line3.setOpacity(0.5);
         viewSceneObj.getChildren().add(line3);
         //set up vertical line to separate information panel
         Line line4 = new Line();
-        line4.setStartX(200.0);
+        line4.setStartX(309);
         line4.setStartY(94);
-        line4.setEndX(200.0);
-        line4.setEndY(400);
+        line4.setEndX(309);
+        line4.setEndY(800);
         line4.setStrokeWidth(4);
         line4.setStroke(Color.gray(0.3));
         line4.setOpacity(0.5);
@@ -219,27 +253,120 @@ public class Client extends Application {
 
 
 
-        //setting up create scene
-        //add all view scene exclusive item to this node
-        Group createSceneObj = new Group();
+        //setting up create magazine scene
+        Group createMagazineSceneObj = new Group();
         //create scene with root node
         Label labelToDisplayMsg = new Label();
         labelToDisplayMsg.setFont(Font.font("Verdana", 16));
         Label magazineName = new Label("Magazine Name");
         TextField magazineNameField = new TextField("");
         Label magazineCost = new Label("Magazine Weekly Cost");
-        TextField magazineCostField = new TextField("");
-        Button createSubmitButton = new Button("Submit");
+        TextField magazineCostField = new TextField();
+        Button createMagazineSubmitButton = new Button("Submit");
+        Button backToLoadingScreenButton = new Button("Back");
         HBox magazineNameLevel = new HBox(magazineName,magazineNameField);
         magazineNameLevel.setSpacing(56);
         HBox magazineCostLevel = new HBox(magazineCost, magazineCostField);
         magazineCostLevel.setSpacing(20);
 
-        VBox createSequence=new VBox(labelToDisplayMsg, magazineNameLevel,magazineCostLevel, createSubmitButton);
+        VBox createSequence=new VBox(labelToDisplayMsg, magazineNameLevel,magazineCostLevel, createMagazineSubmitButton,backToLoadingScreenButton);
         createSequence.setSpacing(40);
-        createSceneObj.getChildren().add(createSequence);
-        Scene createScene = new Scene(createSceneObj,400,400, Color.DARKSEAGREEN);
+        createMagazineSceneObj.getChildren().add(createSequence);
+        Scene createMagazineScene = new Scene(createMagazineSceneObj, Color.DARKSEAGREEN);
 
+
+        //setting up create supplement scene
+        Group createSupplementSceneObj = new Group();
+        //create scene with root node
+        Label supplementCreationMsg = new Label();
+        supplementCreationMsg.setFont(Font.font("Verdana", 16));
+        Label supplementName = new Label("Supplement Name");
+        TextField supplementNameField = new TextField("");
+        Label supplementCost = new Label("Supplement Weekly Cost");
+        TextField supplementCostField = new TextField();
+        Button supplementSubmitAndAddButton = new Button("Submit and Add ");
+        Button supplementSubmitAndCompleteButton = new Button("Submit and Complete Addition");
+        Button endSupplementAddition = new Button("End Supplement Addition");
+        HBox supplementNameLevel = new HBox(supplementName,supplementNameField);
+        supplementNameLevel.setSpacing(56);
+        HBox supplementCostLevel = new HBox(supplementCost, supplementCostField);
+        supplementCostLevel.setSpacing(20);
+
+        VBox supplementSequence=new VBox(supplementCreationMsg, supplementNameLevel,supplementCostLevel, supplementSubmitAndAddButton,supplementSubmitAndCompleteButton,endSupplementAddition);
+        supplementSequence.setSpacing(40);
+        createSupplementSceneObj.getChildren().add(supplementSequence);
+        Scene createSupplementScene = new Scene(createSupplementSceneObj,400,400, Color.DARKSEAGREEN);
+
+
+
+
+        //setting up create customer scene
+        Group createCustomerSceneObj = new Group();
+        //create scene with root node
+        Label customerCreationMsg = new Label();
+        customerCreationMsg.setFont(Font.font("Verdana", 16));
+        Label CustomerName = new Label("Customer Name");
+        TextField customerNameField = new TextField("");
+        Label CustomerAddress = new Label("Customer Address:");
+        Label CustomerStreetNumber = new Label("Street Number");
+        TextField CustomerStreetNumberField = new TextField("");
+        Label customerStreetName = new Label("Street Name");
+        TextField customerStreetNameField = new TextField("");
+        Label customerStateName = new Label("State Name");
+        TextField customerStateNameField = new TextField("");
+        Label customerPostalCode = new Label("Postal Code");
+        TextField customerPostalCodeField = new TextField("");
+        Label customerEmail = new Label("Email Address");
+        TextField customerEmailField = new TextField("");
+        //radio button for paying / associate
+        //if paying then set visible for field of credit or debit? -> Another radio button
+
+
+        Button customerSubmitAndAddButton = new Button("Submit and Add ");
+        Button customerSubmitAndCompleteButton = new Button("Submit and Complete Addition");
+        Button endCustomerAddition = new Button("End Customer Addition");
+
+        HBox customerNameLevel = new HBox(CustomerName,customerNameField);
+        customerNameLevel.setSpacing(30);
+        HBox StreetNumberLevel = new HBox(CustomerStreetNumber,CustomerStreetNumberField);
+        StreetNumberLevel.setSpacing(40);
+        HBox streetNameLevel = new HBox(customerStreetName,customerStreetNameField);
+        streetNameLevel.setSpacing(52);
+        HBox stateNameLevel = new HBox(customerStateName,customerStateNameField);
+        stateNameLevel.setSpacing(55);
+        HBox postalCodeLevel = new HBox(customerPostalCode,customerPostalCodeField);
+        postalCodeLevel.setSpacing(55);
+        HBox customerEmailLevel = new HBox(customerEmail,customerEmailField);
+        customerEmailLevel.setSpacing(44);
+
+        Label choiceOfSupplement = new Label("Supplement customer subscribed to:");
+        ChoiceBox<Supplement> supplementChoiceBox1 = new ChoiceBox<>(supplementList);
+        ChoiceBox<Supplement> supplementChoiceBox2 = new ChoiceBox<>(supplementList);
+        ChoiceBox<Supplement> supplementChoiceBox3 = new ChoiceBox<>(supplementList);
+        ChoiceBox<Supplement> supplementChoiceBox4 = new ChoiceBox<>(supplementList);
+        ChoiceBox<Supplement> supplementChoiceBox5 = new ChoiceBox<>(supplementList);
+        VBox supplementChoiceOptions = new VBox(supplementChoiceBox1, supplementChoiceBox2, supplementChoiceBox3, supplementChoiceBox4, supplementChoiceBox5);
+
+
+
+        VBox customerSequence=new VBox(customerCreationMsg, customerNameLevel,CustomerAddress,  StreetNumberLevel, streetNameLevel, stateNameLevel, postalCodeLevel, customerEmailLevel, choiceOfSupplement,supplementChoiceOptions, customerSubmitAndAddButton,customerSubmitAndCompleteButton,endCustomerAddition);
+        customerSequence.setSpacing(25);
+        createCustomerSceneObj.getChildren().add(customerSequence);
+        Scene createCustomerScene = new Scene(createCustomerSceneObj,400,400, Color.DARKSEAGREEN);
+
+
+
+
+
+        //create option screen (for use if user already create magazine - allow user to only choose create supplement or customer
+        Button createSupplement = new Button("Create Supplement");
+        createSupplement.setMinSize(200,200);
+        Button createCustomer = new Button("Create Customer");
+        createCustomer.setMinSize(200,200);
+        VBox createScreenChoice = new VBox(createSupplement, createCustomer);
+        createScreenChoice.setAlignment(Pos.CENTER);
+        createScreenChoice.setSpacing(80);
+        Scene createSupCustScene = new Scene(createScreenChoice, Color.DARKSEAGREEN);
 
 
 
@@ -273,7 +400,7 @@ public class Client extends Application {
             //alert.setContentText("Do you want to save before exiting?");
 
             if (createAlert.showAndWait().get() == ButtonType.OK){
-                stage.setScene(createScene);
+                stage.setScene(createMagazineScene);
                 System.out.println("Name of magazine from top = " + magazine.getNameOfMagazine()); //testing purpose, to test if it got pass back to the calling function
             }else{
                 event.consume();
@@ -286,10 +413,14 @@ public class Client extends Application {
         });
 
         create.setOnMouseClicked(event -> {
-            stage.setScene(createScene); //switch to "create" scene
+            if(!magazine.getNameOfMagazine().isEmpty()){
+                stage.setScene(createSupCustScene);
+            }else{
+                stage.setScene(createMagazineScene); //switch to "create" scene
+            }
         });
 
-        createSubmitButton.setOnMouseClicked(event -> {
+        createMagazineSubmitButton.setOnMouseClicked(event -> {
             boolean toProceed = false;
             toProceed = createMagazineSubmit(labelToDisplayMsg, magazineNameField, magazineCostField);
             if(toProceed){
@@ -299,10 +430,121 @@ public class Client extends Application {
 
                 extractSupplementList(supplementList);
                 extractCustomerList(customersList);
+                stage.setScene(createSupplementScene);
+            }else{
+                System.out.println("Proceed failed");
+            }
+        });
+
+        backToLoadingScreenButton.setOnMouseClicked(event -> {
+                stage.setScene(loadingScene);
+        });
+
+
+        supplementSubmitAndAddButton.setOnMouseClicked(event -> {
+            boolean toProceed = false;
+            toProceed = createSupplementSubmit(supplementCreationMsg, supplementNameField, supplementCostField);
+            if(toProceed){
+                System.out.println("Proceed successful");
+                System.out.println("Created supplement name = " + supplementNameField.getText());
+                System.out.println("Created supplement name = " + supplementCostField.getText());
+                extractSupplementList(supplementList);
+                supplementNameField.setText("");
+                supplementCostField.setText("");
+                supplementCreationMsg.setText("Supplement added to list");
+            }else{
+                System.out.println("Proceed failed");
+            }
+        });
+
+        supplementSubmitAndCompleteButton.setOnMouseClicked(event -> {
+            boolean toProceed = false;
+            toProceed = createSupplementSubmit(supplementCreationMsg, supplementNameField, supplementCostField);
+            if(toProceed){
+                System.out.println("Proceed successful");
+                System.out.println("Created supplement name = " + supplementNameField.getText());
+                System.out.println("Created supplement name = " + supplementCostField.getText());
+
+                extractSupplementList(supplementList);
+                //stage.setScene(createCustomerScene);
+                stage.setScene(viewScene); //switch to "view" scene
+            }else{
+                System.out.println("Proceed failed");
+            }
+        });
+
+        endSupplementAddition.setOnMouseClicked(event -> {
+            //stage.setScene(createCustomerScene); //switch to "create" scene
+            stage.setScene(viewScene); //switch to "view" scene
+        });
+
+        endCustomerAddition.setOnMouseClicked(event -> {
+            stage.setScene(viewScene); //switch to "view" scene
+        });
+
+        customerSubmitAndAddButton.setOnMouseClicked(event -> {
+            //System.out.println("Choice box 1 empty? = " + supplementChoiceBox1.getSelectionModel().isEmpty());
+            //System.out.println("Choice box 2 empty? = " + supplementChoiceBox2.getSelectionModel().isEmpty());
+            //System.out.println("Choice box 3 empty? = " + supplementChoiceBox3.getSelectionModel().isEmpty());
+            //System.out.println("Choice box 4 empty? = " + supplementChoiceBox4.getSelectionModel().isEmpty());
+            //System.out.println("Choice box 5 empty? = " + supplementChoiceBox5.getSelectionModel().isEmpty());
+
+            boolean toProceed = false;
+            toProceed = createCustomerSubmit(customerCreationMsg, customerNameField, CustomerStreetNumberField,
+                     customerStreetNameField,  customerStateNameField, customerPostalCodeField,  customerEmailField, supplementChoiceBox1,
+                     supplementChoiceBox2,  supplementChoiceBox3, supplementChoiceBox4, supplementChoiceBox5);
+            if(toProceed){
+                System.out.println("Proceed successful");
+                System.out.println("Created Customer name = " + customerNameField.getText());
+                System.out.println("Created Customer email = " + customerEmailField.getText());
+                extractCustomerList(customersList);
+                customerCreationMsg.setText("");
+                customerNameField.setText("");
+                CustomerStreetNumberField.setText("");
+                customerStreetNameField.setText("");
+                customerStateNameField.setText("");
+                customerPostalCodeField.setText("");
+                customerEmailField.setText("");
+                customerCreationMsg.setText("Customer added to list");
+                //supplementChoiceBox1.valueProperty().set(null);
+                //supplementChoiceBox2.valueProperty().set(null);
+                //supplementChoiceBox3.valueProperty().set(null);
+                //supplementChoiceBox4.valueProperty().set(null);
+                //supplementChoiceBox5.valueProperty().set(null);
+            }else{
+                System.out.println("Proceed failed");
+            }
+        });
+
+        customerSubmitAndCompleteButton.setOnMouseClicked(event -> {
+            boolean toProceed = false;
+            toProceed = createCustomerSubmit(customerCreationMsg, customerNameField, CustomerStreetNumberField,
+                    customerStreetNameField,  customerStateNameField, customerPostalCodeField,  customerEmailField, supplementChoiceBox1,
+                    supplementChoiceBox2,  supplementChoiceBox3, supplementChoiceBox4, supplementChoiceBox5);
+            if(toProceed){
+                System.out.println("Proceed successful");
+                System.out.println("Created Customer name = " + customerNameField.getText());
+                System.out.println("Created Customer email = " + customerEmailField.getText());
+                extractCustomerList(customersList);
+                customerCreationMsg.setText("");
+                customerNameField.setText("");
+                CustomerStreetNumberField.setText("");
+                customerStreetNameField.setText("");
+                customerStateNameField.setText("");
+                customerPostalCodeField.setText("");
+                customerEmailField.setText("");
                 stage.setScene(viewScene);
             }else{
                 System.out.println("Proceed failed");
             }
+        });
+
+        createSupplement.setOnMouseClicked(event -> {
+            stage.setScene(createSupplementScene); //switch to "create supplement" scene
+        });
+
+        createCustomer.setOnMouseClicked(event -> {
+            stage.setScene(createCustomerScene); //switch to "create customer" scene
         });
 
         stage.setOnCloseRequest(event -> {
@@ -317,34 +559,134 @@ public class Client extends Application {
 
 
 
+    public boolean createCustomerSubmit (Label msgToDisplay, TextField customerNameField, TextField CustomerStreetNumberField,
+                                         TextField customerStreetNameField, TextField customerStateNameField,
+                                         TextField customerPostalCodeField, TextField customerEmailField, ChoiceBox<Supplement> supplementChoiceBox1,
+                                         ChoiceBox<Supplement> supplementChoiceBox2, ChoiceBox<Supplement> supplementChoiceBox3,
+                                         ChoiceBox<Supplement> supplementChoiceBox4, ChoiceBox<Supplement> supplementChoiceBox5) {
+        int streetNumber;
+        int postalCode;
 
+        try {
+            streetNumber = Integer.parseInt(CustomerStreetNumberField.getText());
+            postalCode = Integer.parseInt(customerPostalCodeField.getText());
 
-        public boolean createMagazineSubmit(Label msgToDisplay, TextField magazineNameField, TextField magazineCostField) {
-            int magazineCost;
-            try {
-                magazineCost = Integer.parseInt(magazineCostField.getText());
-
-                if(magazineNameField.getText().trim().isEmpty()){
-                    msgToDisplay.setText("Magazine Name cannot be empty");
-                }
-                if (magazineCost <= 0) {
-                    msgToDisplay.setText("Cost of magazine must be more than $0");
-                }
-                if(!magazineNameField.getText().trim().isEmpty() && magazineCost > 0){
-                    System.out.println("Create committed");
-                    magazine.setNameOfMagazine(magazineNameField.getText());
-                    magazine.setWeeklyCostOfMagazine(magazineCost);
-                    return true;
-                }
-            } catch (NumberFormatException e) {
-                msgToDisplay.setText("Enter only numbers in Magazine Cost Field");
-            } catch (Exception e) {
-                msgToDisplay.setText("error");
+            if(customerNameField.getText().trim().isEmpty()){
+                msgToDisplay.setText("Customer Name cannot be empty");
             }
-            return false;
+            else if(CustomerStreetNumberField.getText().trim().isEmpty() || streetNumber <= 0){
+                msgToDisplay.setText("Street Number cannot be empty or less than 1");
+            }
+            else if(customerStreetNameField.getText().trim().isEmpty()){
+                msgToDisplay.setText("Street Name cannot be empty");
+            }
+            else if(customerStateNameField.getText().trim().isEmpty()){
+                msgToDisplay.setText("State Name cannot be empty");
+            }
+            else if(customerPostalCodeField.getText().trim().isEmpty() || postalCode <= 0){
+                msgToDisplay.setText("Postal Code cannot be empty or less than 1");
+            }
+            else if(customerEmailField.getText().trim().isEmpty()){
+                msgToDisplay.setText("Email Address cannot be empty");
+            }
+            else{
+                //public PayingCustomer(String customerName, String customerEmail, Integer streetNumber, String streetName, String countryState, Integer postalCode, String paymentMethod) {
+                System.out.println("Customer Create committed");
+                ArrayList<Supplement> tempSupplementList = new ArrayList<>();
+                System.out.println("Choice box 1 empty? = " + supplementChoiceBox1.getSelectionModel().isEmpty());
+                System.out.println("Choice box 2 empty? = " + supplementChoiceBox2.getSelectionModel().isEmpty());
+                System.out.println("Choice box 3 empty? = " + supplementChoiceBox3.getSelectionModel().isEmpty());
+                System.out.println("Choice box 4 empty? = " + supplementChoiceBox4.getSelectionModel().isEmpty());
+                System.out.println("Choice box 5 empty? = " + supplementChoiceBox5.getSelectionModel().isEmpty());
+                if(!supplementChoiceBox1.getSelectionModel().isEmpty()){
+                    tempSupplementList.add(supplementChoiceBox1.getValue());
+                    System.out.println("Name of supplement added = " + supplementChoiceBox1.getValue().getNameOfSupplement());
+                    magazine.getListOfPayingCustomer().add(new PayingCustomer(customerNameField.getText().trim(),
+                            customerEmailField.getText().trim(),
+                            streetNumber,
+                            customerStreetNameField.getText().trim(),
+                            customerStateNameField.getText().trim(),
+                            postalCode,
+                            new String("Paying"),tempSupplementList
+                    ));
+                }
+                else{
+                    magazine.getListOfPayingCustomer().add(new PayingCustomer(customerNameField.getText().trim(),
+                            customerEmailField.getText().trim(),
+                            streetNumber,
+                            customerStreetNameField.getText().trim(),
+                            customerStateNameField.getText().trim(),
+                            postalCode,
+                            new String("Paying")
+                    ));
+                }
+
+
+                return true;
+            }
+        } catch (NumberFormatException e) {
+            msgToDisplay.setText("Enter only number in Street number & Postal code");
+        } catch (NullPointerException e){
+            System.out.println("End of list adding");
+        } catch (Exception e) {
+            msgToDisplay.setText("error");
         }
+        return false;
+    }
 
 
+
+    public boolean createSupplementSubmit (Label msgToDisplay, TextField supplementNameField, TextField supplementCostField) {
+        int supplementCost;
+        try {
+            supplementCost = Integer.parseInt(supplementCostField.getText());
+
+            if(supplementNameField.getText().trim().isEmpty()){
+                msgToDisplay.setText("Supplement Name cannot be empty");
+            }
+            if (supplementCost <= 0) {
+                msgToDisplay.setText("Cost of supplement must be more than $0");
+            }
+            if(!supplementNameField.getText().trim().isEmpty() && supplementCost > 0){
+                System.out.println("Create committed");
+                //magazine.setNameOfMagazine(supplementNameField.getText());
+                //magazine.setWeeklyCostOfMagazine(supplementCost);
+                magazine.getListOfSupplementMagazines().add(new Supplement(supplementNameField.getText().trim(), supplementCost));
+                return true;
+            }
+        } catch (NumberFormatException e) {
+            msgToDisplay.setText("Enter only numbers in Magazine Cost Field");
+        } catch (Exception e) {
+            msgToDisplay.setText("error");
+        }
+        return false;
+    }
+
+
+    public boolean createMagazineSubmit(Label msgToDisplay, TextField magazineNameField, TextField magazineCostField) {
+        int magazineCost;
+        try {
+            magazineCost = Integer.parseInt(magazineCostField.getText());
+
+            if(magazineNameField.getText().trim().isEmpty()){
+                msgToDisplay.setText("Magazine Name cannot be empty");
+            }
+            if (magazineCost <= 0) {
+                msgToDisplay.setText("Cost of magazine must be more than $0");
+            }
+            if(!magazineNameField.getText().trim().isEmpty() && magazineCost > 0){
+                System.out.println("Create committed");
+                magazine.setNameOfMagazine(magazineNameField.getText());
+                magazine.setWeeklyCostOfMagazine(magazineCost);
+                return true;
+            }
+        } catch (NumberFormatException e) {
+            msgToDisplay.setText("Enter only numbers in Magazine Cost Field");
+        } catch (Exception e) {
+            msgToDisplay.setText("error");
+        }
+        return false;
+    }
 
 
     public static void main(String[] args) {
@@ -381,7 +723,7 @@ public class Client extends Application {
         //System.out.println("Number of Magazine entries loaded = " + listOfMagazine.size());
         try {
             if (magazine.getNameOfMagazine().length() > 0) {
-                System.out.println("Name of magazines read from the file: ");
+                System.out.println("Name of magazines read from the file: " + magazine.getNameOfMagazine());
                 System.out.println();
             }
         }catch (NullPointerException NE){
@@ -396,6 +738,8 @@ public class Client extends Application {
 
     private static void extractSupplementList(ObservableList<Supplement> listOfSupplement){
         if(magazine.getListOfSupplementMagazines().size() > 0){
+            //empty the list first to avoid duplicate
+            listOfSupplement.clear();
             for(Supplement supplement: magazine.getListOfSupplementMagazines()){
                 listOfSupplement.addAll(supplement);
             }
@@ -405,6 +749,9 @@ public class Client extends Application {
 
     private static void extractCustomerList(ObservableList<Customer> listOfCustomer){
         if(magazine.getListOfPayingCustomer().size() > 0){
+            //empty the list first
+            System.out.println("Clearing ObservableList");
+            listOfCustomer.clear();
             for(Customer customer: magazine.getListOfPayingCustomer()){
                 if(customer instanceof PayingCustomer){
                     listOfCustomer.add(customer);
@@ -442,12 +789,21 @@ public class Client extends Application {
 
 
     public void logout(Stage stage){
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Logout");
-        alert.setHeaderText("You're about to logout!");
-        alert.setContentText("Do you want to save before exiting?");
+        Alert closeAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        closeAlert.setTitle("Logout");
+        closeAlert.setHeaderText("You're about to logout! Do you want to proceed");
+        //closeAlert.setContentText("Do you want to save before exiting?");
 
-        if (alert.showAndWait().get() == ButtonType.OK){
+
+
+        if (closeAlert.showAndWait().get() == ButtonType.OK){
+            Alert saveAlert = new Alert(Alert.AlertType.CONFIRMATION);
+            saveAlert.setTitle("Save Data");
+            saveAlert.setHeaderText("Do you want to save before exiting?");
+            //saveAlert.setContentText("Do you want to save before exiting?");
+            if (saveAlert.showAndWait().get() == ButtonType.OK){
+                saveData();
+            }
             System.out.println("You successfully logged out");
             stage.close();
         }

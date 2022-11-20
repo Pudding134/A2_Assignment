@@ -73,7 +73,10 @@ public class Supplement implements Serializable{
         System.out.println("Name of supplement = " + nameOfSupplement);
         System.out.println("Weekly Cost of supplement = " + weeklyCostOfSupplement);
     }
-
+    @Override
+    public String toString() {
+        return this.getNameOfSupplement();
+    }
     /**
      * Unit testing for Supplement class
      */
