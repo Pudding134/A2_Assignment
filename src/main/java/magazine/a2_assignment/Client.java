@@ -655,7 +655,9 @@ public class Client extends Application {
                 return true;
             }
         } catch (NumberFormatException e) {
-            msgToDisplay.setText("Enter only numbers in Magazine Cost Field");
+            msgToDisplay.setText("Enter only number in Magazine Cost Field");
+        } catch (NullPointerException e){
+            System.out.println("End of list adding");
         } catch (Exception e) {
             msgToDisplay.setText("error");
         }
