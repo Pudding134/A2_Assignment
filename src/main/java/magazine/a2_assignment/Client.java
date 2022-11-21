@@ -125,6 +125,9 @@ public class Client extends Application {
         Label selectedItem6thProperty = new Label();
         Label selectedItemProperty7 = new Label();
         Label selectedItemProperty8 = new Label();
+        Label selectedItemProperty9 = new Label();
+        Label selectedItemProperty10 = new Label();
+
 
         selectedItem1stProperty.setFont(Font.font("Verdana", 18));
         selectedItem2ndProperty.setFont(Font.font("Verdana", 18));
@@ -134,6 +137,8 @@ public class Client extends Application {
         selectedItem6thProperty.setFont(Font.font("Verdana", 18));
         selectedItemProperty7.setFont(Font.font("Verdana", 18));
         selectedItemProperty8.setFont(Font.font("Verdana", 18));
+        selectedItemProperty9.setFont(Font.font("Verdana", 18));
+        selectedItemProperty10.setFont(Font.font("Verdana", 18));
         infoPanel.setAlignment(Pos.TOP_LEFT);
         infoPanel.setLayoutX(312);
         infoPanel.setLayoutY(100);
@@ -164,9 +169,10 @@ public class Client extends Application {
                 selectedItem4thProperty.setText("");
                 selectedItem5thProperty.setText("");
                 selectedItem6thProperty.setText("");
-                //selectedItemProperty7.setText("");
-                //selectedItemProperty8.setText("");
-
+                selectedItemProperty7.setText("");
+                selectedItemProperty8.setText("");
+                selectedItemProperty9.setText("");
+                selectedItemProperty10.setText("");
             }});
         supplementListView.setPrefHeight(348);
         supplementListView.setPrefWidth(308);
@@ -174,7 +180,7 @@ public class Client extends Application {
         supplementListView.setLayoutY(94);
         supplementListView.setOpacity(0.8);
         viewSceneObj.getChildren().add(supplementListView);
-        infoPanel.getChildren().addAll(infoPanelTitle, selectedItem1stProperty,selectedItem2ndProperty,selectedItem3rdProperty,selectedItem4thProperty,selectedItem5thProperty,selectedItem6thProperty, selectedItemProperty7, selectedItemProperty8);
+        infoPanel.getChildren().addAll(infoPanelTitle, selectedItem1stProperty,selectedItem2ndProperty,selectedItem3rdProperty,selectedItem4thProperty,selectedItem5thProperty,selectedItem6thProperty, selectedItemProperty7, selectedItemProperty8,selectedItemProperty9,selectedItemProperty10);
         viewSceneObj.getChildren().add(infoPanel);
 
         //Set up the list of customers
@@ -196,31 +202,56 @@ public class Client extends Application {
         customersListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Customer>() {
             @Override
             public void changed(ObservableValue<? extends Customer> observableValue, Customer customer, Customer t1) {
+                if(customer != null){
                 Customer currentCustomer = customersListView.getSelectionModel().getSelectedItem();
                 selectedItem1stProperty.setText("Customer Name = \n" + currentCustomer.getCustomerName());
                 selectedItem2ndProperty.setText("\nCustomer Email = " + currentCustomer.getCustomerEmail());
                 selectedItem3rdProperty.setText("\nCustomer Address = " + "\n" + (currentCustomer.getStreetNumber() + " " + currentCustomer.getStreetName() + " " + currentCustomer.getCountryState() + " " + currentCustomer.getPostalCode()));
-                //list of subscription
-                selectedItem4thProperty.setText("");
                 //paying or associate customer
                 if(currentCustomer instanceof PayingCustomer){
-                    selectedItem5thProperty.setText("Paying Customer");
+                    selectedItem4thProperty.setText("Paying Customer");
                 }else{
-                    selectedItem5thProperty.setText("Associate Customer");
+                    selectedItem4thProperty.setText("Associate Customer");
                 }
-                selectedItem6thProperty.setText("aa");
-                //selectedItemProperty7.setText("Empty");
-                //selectedItemProperty8.setText("Empty");
+                //list of subscription
+                selectedItem5thProperty.setText("List of Subscribed Supplement Magazine:");
+                    selectedItem6thProperty.setText("");
+                    selectedItemProperty7.setText("");
+                    selectedItemProperty8.setText("");
+                    selectedItemProperty9.setText("");
+                    selectedItemProperty10.setText("");
                 if(currentCustomer.getCustomerInterestedSupplement().size()==1){
-                    selectedItemProperty7.setText(currentCustomer.getCustomerInterestedSupplement().get(0).getNameOfSupplement());
-                }if(currentCustomer.getCustomerInterestedSupplement().size()==2){
-                    selectedItemProperty8.setText(currentCustomer.getCustomerInterestedSupplement().get(1).getNameOfSupplement());
+                    selectedItem6thProperty.setText(currentCustomer.getCustomerInterestedSupplement().get(0).getNameOfSupplement());
+                }else if(currentCustomer.getCustomerInterestedSupplement().size()==2){
+                    selectedItem6thProperty.setText(currentCustomer.getCustomerInterestedSupplement().get(0).getNameOfSupplement());
+                    selectedItemProperty7.setText(currentCustomer.getCustomerInterestedSupplement().get(1).getNameOfSupplement());
+                }else if(currentCustomer.getCustomerInterestedSupplement().size()==3){
+                    selectedItem6thProperty.setText(currentCustomer.getCustomerInterestedSupplement().get(0).getNameOfSupplement());
+                    selectedItemProperty7.setText(currentCustomer.getCustomerInterestedSupplement().get(1).getNameOfSupplement());
+                    selectedItemProperty8.setText(currentCustomer.getCustomerInterestedSupplement().get(3).getNameOfSupplement());
+                }else if(currentCustomer.getCustomerInterestedSupplement().size()==4){
+                    selectedItem6thProperty.setText(currentCustomer.getCustomerInterestedSupplement().get(0).getNameOfSupplement());
+                    selectedItemProperty7.setText(currentCustomer.getCustomerInterestedSupplement().get(1).getNameOfSupplement());
+                    selectedItemProperty8.setText(currentCustomer.getCustomerInterestedSupplement().get(3).getNameOfSupplement());
+                    selectedItemProperty9.setText(currentCustomer.getCustomerInterestedSupplement().get(4).getNameOfSupplement());
+                }else if(currentCustomer.getCustomerInterestedSupplement().size()==5){
+                    selectedItem6thProperty.setText(currentCustomer.getCustomerInterestedSupplement().get(0).getNameOfSupplement());
+                    selectedItemProperty7.setText(currentCustomer.getCustomerInterestedSupplement().get(1).getNameOfSupplement());
+                    selectedItemProperty8.setText(currentCustomer.getCustomerInterestedSupplement().get(3).getNameOfSupplement());
+                    selectedItemProperty9.setText(currentCustomer.getCustomerInterestedSupplement().get(4).getNameOfSupplement());
+                    selectedItemProperty10.setText(currentCustomer.getCustomerInterestedSupplement().get(5).getNameOfSupplement());
                 }else{
-                    selectedItemProperty7.setText("Empty");
-                    selectedItemProperty8.setText("Empty");
+                    System.out.println("nothing to change! No supplement at all");
+                    System.out.println("Number of supplement under this customer = " + currentCustomer.getCustomerInterestedSupplement().size());
                 }
-
-            }});
+                /*
+                    selectedItem6thProperty.setText(currentCustomer.getCustomerInterestedSupplement().get(0).getNameOfSupplement());
+                    selectedItemProperty7.setText(currentCustomer.getCustomerInterestedSupplement().get(1).getNameOfSupplement());
+                    selectedItemProperty8.setText(currentCustomer.getCustomerInterestedSupplement().get(3).getNameOfSupplement());
+                    selectedItemProperty9.setText(currentCustomer.getCustomerInterestedSupplement().get(4).getNameOfSupplement());
+                    selectedItemProperty10.setText(currentCustomer.getCustomerInterestedSupplement().get(4).getNameOfSupplement());
+                */
+            }}});
         customersListView.setPrefHeight(348);
         customersListView.setPrefWidth(308);
         customersListView.setLayoutX(0);
@@ -479,16 +510,13 @@ public class Client extends Application {
         });
 
         endCustomerAddition.setOnMouseClicked(event -> {
+            clearCustomerField(customerCreationMsg, customerNameField, CustomerStreetNumberField,
+                    customerStreetNameField,  customerStateNameField, customerPostalCodeField,  customerEmailField, supplementChoiceBox1,
+                    supplementChoiceBox2,  supplementChoiceBox3, supplementChoiceBox4, supplementChoiceBox5);
             stage.setScene(viewScene); //switch to "view" scene
         });
 
         customerSubmitAndAddButton.setOnMouseClicked(event -> {
-            //System.out.println("Choice box 1 empty? = " + supplementChoiceBox1.getSelectionModel().isEmpty());
-            //System.out.println("Choice box 2 empty? = " + supplementChoiceBox2.getSelectionModel().isEmpty());
-            //System.out.println("Choice box 3 empty? = " + supplementChoiceBox3.getSelectionModel().isEmpty());
-            //System.out.println("Choice box 4 empty? = " + supplementChoiceBox4.getSelectionModel().isEmpty());
-            //System.out.println("Choice box 5 empty? = " + supplementChoiceBox5.getSelectionModel().isEmpty());
-
             boolean toProceed = false;
             toProceed = createCustomerSubmit(customerCreationMsg, customerNameField, CustomerStreetNumberField,
                      customerStreetNameField,  customerStateNameField, customerPostalCodeField,  customerEmailField, supplementChoiceBox1,
@@ -498,6 +526,10 @@ public class Client extends Application {
                 System.out.println("Created Customer name = " + customerNameField.getText());
                 System.out.println("Created Customer email = " + customerEmailField.getText());
                 extractCustomerList(customersList);
+                clearCustomerField(customerCreationMsg, customerNameField, CustomerStreetNumberField,
+                        customerStreetNameField,  customerStateNameField, customerPostalCodeField,  customerEmailField, supplementChoiceBox1,
+                        supplementChoiceBox2,  supplementChoiceBox3, supplementChoiceBox4, supplementChoiceBox5);
+                /*
                 customerCreationMsg.setText("");
                 customerNameField.setText("");
                 CustomerStreetNumberField.setText("");
@@ -506,11 +538,13 @@ public class Client extends Application {
                 customerPostalCodeField.setText("");
                 customerEmailField.setText("");
                 customerCreationMsg.setText("Customer added to list");
-                //supplementChoiceBox1.valueProperty().set(null);
-                //supplementChoiceBox2.valueProperty().set(null);
-                //supplementChoiceBox3.valueProperty().set(null);
-                //supplementChoiceBox4.valueProperty().set(null);
-                //supplementChoiceBox5.valueProperty().set(null);
+                supplementChoiceBox1.setValue(null);
+                supplementChoiceBox2.setValue(null);
+                supplementChoiceBox3.setValue(null);
+                supplementChoiceBox4.setValue(null);
+                supplementChoiceBox5.setValue(null);
+                */
+
             }else{
                 System.out.println("Proceed failed");
             }
@@ -526,6 +560,10 @@ public class Client extends Application {
                 System.out.println("Created Customer name = " + customerNameField.getText());
                 System.out.println("Created Customer email = " + customerEmailField.getText());
                 extractCustomerList(customersList);
+                clearCustomerField(customerCreationMsg, customerNameField, CustomerStreetNumberField,
+                        customerStreetNameField,  customerStateNameField, customerPostalCodeField,  customerEmailField, supplementChoiceBox1,
+                        supplementChoiceBox2,  supplementChoiceBox3, supplementChoiceBox4, supplementChoiceBox5);
+                /*
                 customerCreationMsg.setText("");
                 customerNameField.setText("");
                 CustomerStreetNumberField.setText("");
@@ -533,6 +571,7 @@ public class Client extends Application {
                 customerStateNameField.setText("");
                 customerPostalCodeField.setText("");
                 customerEmailField.setText("");
+                 */
                 stage.setScene(viewScene);
             }else{
                 System.out.println("Proceed failed");
@@ -557,7 +596,26 @@ public class Client extends Application {
     }
 
 
+    private void clearCustomerField (Label msgToDisplay, TextField customerNameField, TextField CustomerStreetNumberField,
+                                     TextField customerStreetNameField, TextField customerStateNameField,
+                                     TextField customerPostalCodeField, TextField customerEmailField, ChoiceBox<Supplement> supplementChoiceBox1,
+                                     ChoiceBox<Supplement> supplementChoiceBox2, ChoiceBox<Supplement> supplementChoiceBox3,
+                                     ChoiceBox<Supplement> supplementChoiceBox4, ChoiceBox<Supplement> supplementChoiceBox5) {
 
+        msgToDisplay.setText("");
+        customerNameField.setText("");
+        CustomerStreetNumberField.setText("");
+        customerStreetNameField.setText("");
+        customerStateNameField.setText("");
+        customerPostalCodeField.setText("");
+        customerEmailField.setText("");
+        msgToDisplay.setText("");
+        supplementChoiceBox1.setValue(null);
+        supplementChoiceBox2.setValue(null);
+        supplementChoiceBox3.setValue(null);
+        supplementChoiceBox4.setValue(null);
+        supplementChoiceBox5.setValue(null);
+    }
 
     public boolean createCustomerSubmit (Label msgToDisplay, TextField customerNameField, TextField CustomerStreetNumberField,
                                          TextField customerStreetNameField, TextField customerStateNameField,
@@ -593,14 +651,18 @@ public class Client extends Application {
                 //public PayingCustomer(String customerName, String customerEmail, Integer streetNumber, String streetName, String countryState, Integer postalCode, String paymentMethod) {
                 System.out.println("Customer Create committed");
                 ArrayList<Supplement> tempSupplementList = new ArrayList<>();
-                System.out.println("Choice box 1 empty? = " + supplementChoiceBox1.getSelectionModel().isEmpty());
-                System.out.println("Choice box 2 empty? = " + supplementChoiceBox2.getSelectionModel().isEmpty());
-                System.out.println("Choice box 3 empty? = " + supplementChoiceBox3.getSelectionModel().isEmpty());
-                System.out.println("Choice box 4 empty? = " + supplementChoiceBox4.getSelectionModel().isEmpty());
-                System.out.println("Choice box 5 empty? = " + supplementChoiceBox5.getSelectionModel().isEmpty());
+                //System.out.println("Choice box 1 empty? = " + supplementChoiceBox1.getSelectionModel().isEmpty());
+                //System.out.println("Choice box 2 empty? = " + supplementChoiceBox2.getSelectionModel().isEmpty());
+                //System.out.println("Choice box 3 empty? = " + supplementChoiceBox3.getSelectionModel().isEmpty());
+                //System.out.println("Choice box 4 empty? = " + supplementChoiceBox4.getSelectionModel().isEmpty());
+                //System.out.println("Choice box 5 empty? = " + supplementChoiceBox5.getSelectionModel().isEmpty());
                 if(!supplementChoiceBox1.getSelectionModel().isEmpty()){
                     tempSupplementList.add(supplementChoiceBox1.getValue());
-                    System.out.println("Name of supplement added = " + supplementChoiceBox1.getValue().getNameOfSupplement());
+                    tempSupplementList.add(supplementChoiceBox2.getValue());
+
+                    System.out.println("Name of supplement 1 added = " + supplementChoiceBox1.getValue().getNameOfSupplement());
+                    System.out.println("Name of supplement 2 added = " + supplementChoiceBox2.getValue().getNameOfSupplement());
+
                     magazine.getListOfPayingCustomer().add(new PayingCustomer(customerNameField.getText().trim(),
                             customerEmailField.getText().trim(),
                             streetNumber,
@@ -620,13 +682,11 @@ public class Client extends Application {
                             new String("Paying")
                     ));
                 }
-
-
                 return true;
             }
         } catch (NumberFormatException e) {
             msgToDisplay.setText("Enter only number in Street number & Postal code");
-        } catch (NullPointerException e){
+        } catch (NullPointerException ex){
             System.out.println("End of list adding");
         } catch (Exception e) {
             msgToDisplay.setText("error");
@@ -754,14 +814,15 @@ public class Client extends Application {
             //empty the list first
             System.out.println("Clearing ObservableList");
             listOfCustomer.clear();
-            for(Customer customer: magazine.getListOfPayingCustomer()){
-                if(customer instanceof PayingCustomer){
+            for(PayingCustomer customer: magazine.getListOfPayingCustomer()){
+                if(customer != null && customer.getListOfAssociateCustomer().size()>0){
+                    listOfCustomer.addAll(customer.getListOfAssociateCustomer());
+                }
+                if(customer != null){
                     listOfCustomer.add(customer);
                     System.out.println(customer.getCustomerName());
                 }
-                if(customer instanceof PayingCustomer && ((PayingCustomer) customer).getListOfAssociateCustomer().size()>0){
-                    listOfCustomer.addAll(((PayingCustomer) customer).getListOfAssociateCustomer());
-                }
+
             }
         }
     }
