@@ -545,44 +545,40 @@ public class Client extends Application {
         //editCustomerSequence.getChildren().add(customerSequence);
         Scene editCustomerScene = new Scene(editCustomerSequence,400,400, Color.DARKSEAGREEN);
 
-        //loadCustomerChoice
+
         loadCustomerChoice.setOnMouseClicked(event -> {
-            for(int i = 0; i<magazine.getListOfPayingCustomer().size(); i++) {
-                if (magazine.getListOfPayingCustomer().get(i) == customerEditChoice.getValue()) {
-                    System.out.println("Customer entry found");
-                    customerEditMsg.setText("Paying Customer Data Loaded");
-                    editCustomerNameField.setText(magazine.getListOfPayingCustomer().get(i).getCustomerName());
-                    editCustomerStreetNumberField.setText(""+magazine.getListOfPayingCustomer().get(i).getStreetName());
-                    editCustomerStreetNameField.setText(magazine.getListOfPayingCustomer().get(i).getStreetName());
-                    editCustomerStateNameField.setText(magazine.getListOfPayingCustomer().get(i).getCountryState());
-                    editCustomerPostalCodeField.setText(""+magazine.getListOfPayingCustomer().get(i).getPostalCode());
-                    editCustomerEmailField.setText(magazine.getListOfPayingCustomer().get(i).getCustomerEmail());
-                    editCustomerType.setText("Customer Type = Paying Customer");
-                    System.out.println("Customer loaded");
-                    break;
-                }
-                else{
-                    for(int j=0; j<magazine.getListOfPayingCustomer().get(i).getListOfAssociateCustomer().size(); j++){
-                        if(magazine.getListOfPayingCustomer().get(i).getListOfAssociateCustomer().get(j) == customerEditChoice.getValue()){
-                            System.out.println("Customer entry found");
-                            customerEditMsg.setText("Associate Customer Data Loaded");
-                            editCustomerNameField.setText(magazine.getListOfPayingCustomer().get(i).getListOfAssociateCustomer().get(j).getCustomerName());
-                            editCustomerStreetNumberField.setText(""+magazine.getListOfPayingCustomer().get(i).getListOfAssociateCustomer().get(j).getStreetName());
-                            editCustomerStreetNameField.setText(magazine.getListOfPayingCustomer().get(i).getListOfAssociateCustomer().get(j).getStreetName());
-                            editCustomerStateNameField.setText(magazine.getListOfPayingCustomer().get(i).getListOfAssociateCustomer().get(j).getCountryState());
-                            editCustomerPostalCodeField.setText(""+magazine.getListOfPayingCustomer().get(i).getListOfAssociateCustomer().get(j).getPostalCode());
-                            editCustomerEmailField.setText(magazine.getListOfPayingCustomer().get(i).getListOfAssociateCustomer().get(j).getCustomerEmail());
-                            editCustomerType.setText("Customer Type = Associate Customer");
-                            System.out.println("Customer loaded");
-                            break;
-                        }
-                    }
-                }
+            loadCustomerEditData(customerEditChoice, customerEditMsg, editCustomerNameField, editCustomerStreetNumberField,
+                    editCustomerStreetNameField, editCustomerStateNameField, editCustomerPostalCodeField, editCustomerEmailField, editCustomerType);
+        });
+
+        editCustomerSaveButton.setOnMouseClicked(event -> {
+            saveCustomerData(customerEditChoice, customerEditMsg, editCustomerNameField, editCustomerStreetNumberField,
+                    editCustomerStreetNameField, editCustomerStateNameField, editCustomerPostalCodeField, editCustomerEmailField, editCustomerType);
+        });
+
+        editCustomerDeleteButton.setOnMouseClicked(event -> {
+            Alert deleteCustomerAlert = new Alert(Alert.AlertType.CONFIRMATION);
+            deleteCustomerAlert.setTitle("Delete Customer data");
+            deleteCustomerAlert.setHeaderText("Do you want to delete selected customer data?");
+            deleteCustomerAlert.setContentText("Note: If paying customer deleted, all associate customer under this account will be deleted too.");
+
+            if (deleteCustomerAlert.showAndWait().get() == ButtonType.OK) {
+                deleteCustomer(customerEditChoice);
+                clearEditCustomerData(customerEditChoice, customerEditMsg, editCustomerNameField, editCustomerStreetNumberField,
+                        editCustomerStreetNameField, editCustomerStateNameField, editCustomerPostalCodeField, editCustomerEmailField, editCustomerType);
+                extractCustomerList(customersList, payingCustomersList); //reload the list everytime there is addition
+            } else {
+                event.consume();
+                customerEditMsg.setText("Deletion did not occur");
             }
         });
-        //editCustomerSaveButton
-        //editCustomerDeleteButton
-        //editCustomerExitButton
+
+        editCustomerExitButton.setOnMouseClicked(event -> {
+            clearEditCustomerData(customerEditChoice, customerEditMsg, editCustomerNameField, editCustomerStreetNumberField,
+                    editCustomerStreetNameField, editCustomerStateNameField, editCustomerPostalCodeField, editCustomerEmailField, editCustomerType);
+            stage.setScene(viewScene);
+        });
+
 
         editCustomer.setOnMouseClicked(event -> {
             stage.setScene(editCustomerScene);
@@ -832,6 +828,158 @@ public class Client extends Application {
     }
 
 
+
+
+    private void deleteCustomer (ChoiceBox<Customer> customerEditChoice){
+        for(int i = 0; i<magazine.getListOfPayingCustomer().size(); i++) {
+            if (magazine.getListOfPayingCustomer().get(i) == customerEditChoice.getValue()) {
+                System.out.println("Customer entry found");
+                magazine.getListOfPayingCustomer().remove(i);
+                System.out.println("Paying Customer entry deleted");
+                return;
+            }
+            else{
+                for(int j=0; j<magazine.getListOfPayingCustomer().get(i).getListOfAssociateCustomer().size(); j++){
+                    if(magazine.getListOfPayingCustomer().get(i).getListOfAssociateCustomer().get(j) == customerEditChoice.getValue()){
+                        System.out.println("Customer entry found");
+                        magazine.getListOfPayingCustomer().get(i).getListOfAssociateCustomer().remove(j);
+                        System.out.println("Associate Customer entry deleted");
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+    private void clearEditCustomerData(ChoiceBox<Customer> customerEditChoice, Label customerEditMsg, TextField editCustomerNameField, TextField editCustomerStreetNumberField,
+                                  TextField editCustomerStreetNameField, TextField editCustomerStateNameField,
+                                  TextField editCustomerPostalCodeField, TextField editCustomerEmailField, Label editCustomerType){
+        customerEditChoice.setValue(null);
+        customerEditMsg.setText("");
+        editCustomerNameField.setText("");
+        editCustomerStreetNumberField.setText("");
+        editCustomerStreetNameField.setText("");
+        editCustomerStateNameField.setText("");
+        editCustomerPostalCodeField.setText("");
+        editCustomerEmailField.setText("");
+        editCustomerType.setText("Customer Type = ");
+        System.out.println("All Edit Field cleared");
+    }
+
+    private void saveCustomerData(ChoiceBox<Customer> customerEditChoice, Label customerEditMsg, TextField editCustomerNameField, TextField editCustomerStreetNumberField,
+                                  TextField editCustomerStreetNameField, TextField editCustomerStateNameField,
+                                  TextField editCustomerPostalCodeField, TextField editCustomerEmailField, Label editCustomerType){
+
+        int streetNumber;
+        int postalCode;
+
+        try {
+            streetNumber = Integer.parseInt(editCustomerStreetNumberField.getText());
+            postalCode = Integer.parseInt(editCustomerPostalCodeField.getText());
+
+            if(editCustomerNameField.getText().trim().isEmpty()){
+                customerEditMsg.setText("Customer Name cannot be empty");
+            }
+            else if(editCustomerStreetNumberField.getText().trim().isEmpty() || streetNumber <= 0){
+                customerEditMsg.setText("Street Number cannot be empty or less than 1");
+            }
+            else if(editCustomerStreetNameField.getText().trim().isEmpty()){
+                customerEditMsg.setText("Street Name cannot be empty");
+            }
+            else if(editCustomerStateNameField.getText().trim().isEmpty()){
+                customerEditMsg.setText("State Name cannot be empty");
+            }
+            else if(editCustomerPostalCodeField.getText().trim().isEmpty() || postalCode <= 0){
+                customerEditMsg.setText("Postal Code cannot be empty or less than 1");
+            }
+            else if(editCustomerEmailField.getText().trim().isEmpty()){
+                customerEditMsg.setText("Email Address cannot be empty");
+            }else{
+                for(int i = 0; i<magazine.getListOfPayingCustomer().size(); i++) {
+                    if (magazine.getListOfPayingCustomer().get(i) == customerEditChoice.getValue()) {
+                        System.out.println("Customer entry found");
+                        customerEditMsg.setText("Customer Data Changes Saved");
+                        magazine.getListOfPayingCustomer().get(i).setCustomerName(editCustomerNameField.getText());
+                        magazine.getListOfPayingCustomer().get(i).setStreetNumber(Integer.parseInt(editCustomerStreetNumberField.getText()));
+                        magazine.getListOfPayingCustomer().get(i).setStreetName(editCustomerStreetNameField.getText());
+                        magazine.getListOfPayingCustomer().get(i).setCountryState(editCustomerStateNameField.getText());
+                        magazine.getListOfPayingCustomer().get(i).setPostalCode(Integer.parseInt(editCustomerPostalCodeField.getText()));
+                        magazine.getListOfPayingCustomer().get(i).setCustomerEmail(editCustomerEmailField.getText());
+                        editCustomerType.setText("Customer Type = Paying Customer");
+                        System.out.println("Paying Customer entry Updated");
+                        return;
+                    }
+                    else{
+                        for(int j=0; j<magazine.getListOfPayingCustomer().get(i).getListOfAssociateCustomer().size(); j++){
+                            if(magazine.getListOfPayingCustomer().get(i).getListOfAssociateCustomer().get(j) == customerEditChoice.getValue()){
+                                customerEditMsg.setText("Customer Data Changes Saved");
+                                magazine.getListOfPayingCustomer().get(i).getListOfAssociateCustomer().get(j).setCustomerName(editCustomerNameField.getText());
+                                magazine.getListOfPayingCustomer().get(i).getListOfAssociateCustomer().get(j).setStreetNumber(Integer.parseInt(editCustomerStreetNumberField.getText()));
+                                magazine.getListOfPayingCustomer().get(i).getListOfAssociateCustomer().get(j).setStreetName(editCustomerStreetNameField.getText());
+                                magazine.getListOfPayingCustomer().get(i).getListOfAssociateCustomer().get(j).setCountryState(editCustomerStateNameField.getText());
+                                magazine.getListOfPayingCustomer().get(i).getListOfAssociateCustomer().get(j).setPostalCode(Integer.parseInt(editCustomerPostalCodeField.getText()));
+                                magazine.getListOfPayingCustomer().get(i).getListOfAssociateCustomer().get(j).setCustomerEmail(editCustomerEmailField.getText());
+                                editCustomerType.setText("Customer Type = Associate Customer");
+                                System.out.println("Associate Customer entry Updated");
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (NumberFormatException e) {
+            customerEditMsg.setText("Enter only number in Street number & Postal code");
+        } catch (NullPointerException ex){
+            System.out.println("End of list adding");
+        } catch (Exception e) {
+            customerEditMsg.setText("error");
+        }
+
+
+
+    }
+
+
+    private void loadCustomerEditData(ChoiceBox<Customer> customerEditChoice, Label customerEditMsg, TextField editCustomerNameField, TextField editCustomerStreetNumberField,
+                                      TextField editCustomerStreetNameField, TextField editCustomerStateNameField,
+                                      TextField editCustomerPostalCodeField, TextField editCustomerEmailField, Label editCustomerType){
+
+        for(int i = 0; i<magazine.getListOfPayingCustomer().size(); i++) {
+            if (magazine.getListOfPayingCustomer().get(i) == customerEditChoice.getValue()) {
+                System.out.println("Customer entry found");
+                customerEditMsg.setText("Paying Customer Data Loaded");
+                editCustomerNameField.setText(magazine.getListOfPayingCustomer().get(i).getCustomerName());
+                editCustomerStreetNumberField.setText(""+magazine.getListOfPayingCustomer().get(i).getStreetNumber());
+                editCustomerStreetNameField.setText(magazine.getListOfPayingCustomer().get(i).getStreetName());
+                editCustomerStateNameField.setText(magazine.getListOfPayingCustomer().get(i).getCountryState());
+                editCustomerPostalCodeField.setText(""+magazine.getListOfPayingCustomer().get(i).getPostalCode());
+                editCustomerEmailField.setText(magazine.getListOfPayingCustomer().get(i).getCustomerEmail());
+                editCustomerType.setText("Customer Type = Paying Customer");
+                System.out.println("Customer loaded");
+                return;
+            }
+            else{
+                for(int j=0; j<magazine.getListOfPayingCustomer().get(i).getListOfAssociateCustomer().size(); j++){
+                    if(magazine.getListOfPayingCustomer().get(i).getListOfAssociateCustomer().get(j) == customerEditChoice.getValue()){
+                        System.out.println("Customer entry found");
+                        customerEditMsg.setText("Associate Customer Data Loaded");
+                        editCustomerNameField.setText(magazine.getListOfPayingCustomer().get(i).getListOfAssociateCustomer().get(j).getCustomerName());
+                        editCustomerStreetNumberField.setText(""+magazine.getListOfPayingCustomer().get(i).getListOfAssociateCustomer().get(j).getStreetNumber());
+                        editCustomerStreetNameField.setText(magazine.getListOfPayingCustomer().get(i).getListOfAssociateCustomer().get(j).getStreetName());
+                        editCustomerStateNameField.setText(magazine.getListOfPayingCustomer().get(i).getListOfAssociateCustomer().get(j).getCountryState());
+                        editCustomerPostalCodeField.setText(""+magazine.getListOfPayingCustomer().get(i).getListOfAssociateCustomer().get(j).getPostalCode());
+                        editCustomerEmailField.setText(magazine.getListOfPayingCustomer().get(i).getListOfAssociateCustomer().get(j).getCustomerEmail());
+                        editCustomerType.setText("Customer Type = Associate Customer");
+                        System.out.println("Customer loaded");
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+
+
     private int findSupplement (TextField editSupplementNameField, TextField editSupplementCostField, ChoiceBox<Supplement> supplementEditChoice){
         int positionOfSupplementFound = -1;
         for(int i = 0; i<magazine.getListOfSupplementMagazines().size(); i++){
@@ -873,8 +1021,6 @@ public class Client extends Application {
         editSupplementCostField.setText("");
         supplementEditChoice.setValue(null);
     }
-
-
 
     private void clearCustomerField (Label msgToDisplay, TextField customerNameField, TextField CustomerStreetNumberField,
                                      TextField customerStreetNameField, TextField customerStateNameField,
