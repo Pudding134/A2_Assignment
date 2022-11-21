@@ -481,11 +481,6 @@ public class Client extends Application {
                 System.out.println("Created supplement name = " + supplementCostField.getText());
                 extractSupplementList(supplementList);
                 clearSupplementField(supplementCreationMsg, supplementNameField, supplementCostField);
-                /*
-                supplementNameField.setText("");
-                supplementCostField.setText("");
-                supplementCreationMsg.setText("Supplement added to list");
-                 */
             }else{
                 System.out.println("Proceed failed");
             }
@@ -528,26 +523,10 @@ public class Client extends Application {
                 System.out.println("Proceed successful");
                 System.out.println("Created Customer name = " + customerNameField.getText());
                 System.out.println("Created Customer email = " + customerEmailField.getText());
-                extractCustomerList(customersList);
+                extractCustomerList(customersList); //reload the list everytime there is addition
                 clearCustomerField(customerCreationMsg, customerNameField, CustomerStreetNumberField,
                         customerStreetNameField,  customerStateNameField, customerPostalCodeField,  customerEmailField, supplementChoiceBox1,
                         supplementChoiceBox2,  supplementChoiceBox3, supplementChoiceBox4, supplementChoiceBox5);
-                /*
-                customerCreationMsg.setText("");
-                customerNameField.setText("");
-                CustomerStreetNumberField.setText("");
-                customerStreetNameField.setText("");
-                customerStateNameField.setText("");
-                customerPostalCodeField.setText("");
-                customerEmailField.setText("");
-                customerCreationMsg.setText("Customer added to list");
-                supplementChoiceBox1.setValue(null);
-                supplementChoiceBox2.setValue(null);
-                supplementChoiceBox3.setValue(null);
-                supplementChoiceBox4.setValue(null);
-                supplementChoiceBox5.setValue(null);
-                */
-
             }else{
                 System.out.println("Proceed failed");
             }
@@ -562,19 +541,10 @@ public class Client extends Application {
                 System.out.println("Proceed successful");
                 System.out.println("Created Customer name = " + customerNameField.getText());
                 System.out.println("Created Customer email = " + customerEmailField.getText());
-                extractCustomerList(customersList);
+                extractCustomerList(customersList); //reload the list everytime a customer added
                 clearCustomerField(customerCreationMsg, customerNameField, CustomerStreetNumberField,
                         customerStreetNameField,  customerStateNameField, customerPostalCodeField,  customerEmailField, supplementChoiceBox1,
                         supplementChoiceBox2,  supplementChoiceBox3, supplementChoiceBox4, supplementChoiceBox5);
-                /*
-                customerCreationMsg.setText("");
-                customerNameField.setText("");
-                CustomerStreetNumberField.setText("");
-                customerStreetNameField.setText("");
-                customerStateNameField.setText("");
-                customerPostalCodeField.setText("");
-                customerEmailField.setText("");
-                 */
                 stage.setScene(viewScene);
             }else{
                 System.out.println("Proceed failed");
@@ -604,7 +574,6 @@ public class Client extends Application {
                                      TextField customerPostalCodeField, TextField customerEmailField, ChoiceBox<Supplement> supplementChoiceBox1,
                                      ChoiceBox<Supplement> supplementChoiceBox2, ChoiceBox<Supplement> supplementChoiceBox3,
                                      ChoiceBox<Supplement> supplementChoiceBox4, ChoiceBox<Supplement> supplementChoiceBox5) {
-
         msgToDisplay.setText("");
         customerNameField.setText("");
         CustomerStreetNumberField.setText("");
@@ -654,11 +623,6 @@ public class Client extends Application {
                 //public PayingCustomer(String customerName, String customerEmail, Integer streetNumber, String streetName, String countryState, Integer postalCode, String paymentMethod) {
                 System.out.println("Customer Create committed");
                 ArrayList<Supplement> tempSupplementList = new ArrayList<>();
-                //System.out.println("Choice box 1 empty? = " + supplementChoiceBox1.getSelectionModel().isEmpty());
-                //System.out.println("Choice box 2 empty? = " + supplementChoiceBox2.getSelectionModel().isEmpty());
-                //System.out.println("Choice box 3 empty? = " + supplementChoiceBox3.getSelectionModel().isEmpty());
-                //System.out.println("Choice box 4 empty? = " + supplementChoiceBox4.getSelectionModel().isEmpty());
-                //System.out.println("Choice box 5 empty? = " + supplementChoiceBox5.getSelectionModel().isEmpty());
                 if(!supplementChoiceBox1.getSelectionModel().isEmpty()){
                     tempSupplementList.add(supplementChoiceBox1.getValue());
                     tempSupplementList.add(supplementChoiceBox2.getValue());
@@ -819,7 +783,7 @@ public class Client extends Application {
     private static void extractCustomerList(ObservableList<Customer> listOfCustomer){
         if(magazine.getListOfPayingCustomer().size() > 0){
             //empty the list first
-            System.out.println("Clearing ObservableList");
+            System.out.println("Clearing Customer ObservableList");
             listOfCustomer.clear();
             for(PayingCustomer customer: magazine.getListOfPayingCustomer()){
                 if(customer != null && customer.getListOfAssociateCustomer().size()>0){
