@@ -361,7 +361,13 @@ public class Client extends Application {
         associateCustButton.setToggleGroup(customerTypeGroup);
         HBox customerType = new HBox(payingCustButton, associateCustButton);
         //if paying then set visible for field of credit or debit? -> Another radio button
+        ObservableList<PayingCustomer> payingCustomersList = FXCollections.observableArrayList();
+        ChoiceBox<PayingCustomer> choiceOfPayingCustomerToAdd = new ChoiceBox<>(payingCustomersList);
+        Label payingCustomerToAddUnder = new Label("Paying Customer a/c (Associate Customer addition only)");
+        Button refreshSelection = new Button("Reset Paying Customer Choice");
 
+        HBox payingCustomerAdditionLevel = new HBox(payingCustomerToAddUnder, choiceOfPayingCustomerToAdd, refreshSelection);
+        payingCustomerAdditionLevel.setSpacing(15);
 
         Button customerSubmitAndAddButton = new Button("Submit and Add ");
         Button customerSubmitAndCompleteButton = new Button("Submit and Complete Addition");
@@ -390,13 +396,10 @@ public class Client extends Application {
 
 
 
-        VBox customerSequence=new VBox(customerCreationMsg, customerNameLevel,CustomerAddress,  StreetNumberLevel, streetNameLevel, stateNameLevel, postalCodeLevel, customerEmailLevel, choiceOfSupplement,supplementChoiceOptions, customerType, customerSubmitAndAddButton,customerSubmitAndCompleteButton,endCustomerAddition);
-        customerSequence.setSpacing(25);
+        VBox customerSequence=new VBox(customerCreationMsg, customerNameLevel,CustomerAddress,  StreetNumberLevel, streetNameLevel, stateNameLevel, postalCodeLevel, customerEmailLevel, choiceOfSupplement,supplementChoiceOptions, customerType, payingCustomerAdditionLevel, customerSubmitAndAddButton,customerSubmitAndCompleteButton,endCustomerAddition);
+        customerSequence.setSpacing(20);
         createCustomerSceneObj.getChildren().add(customerSequence);
         Scene createCustomerScene = new Scene(createCustomerSceneObj,400,400, Color.DARKSEAGREEN);
-
-
-
 
 
         //create option screen (for use if user already create magazine - allow user to only choose create supplement or customer
@@ -412,9 +415,251 @@ public class Client extends Application {
 
 
 
+        //create edit scene
+        //create option scene to choose between editing - Magazine / supplement / Customer
+        //create option screen (for use if user already create magazine - allow user to only choose create supplement or customer
+        Button editMagazine = new Button("Magazine Edit");
+        editMagazine.setMinSize(200,200);
+        Button editSupplement = new Button("Supplement Edit");
+        editSupplement.setMinSize(200,200);
+        Button editCustomer = new Button("Customer Edit");
+        editCustomer.setMinSize(200,200);
+
+        HBox editScreenChoice = new HBox(editMagazine, editSupplement, editCustomer);
+        editScreenChoice.setAlignment(Pos.CENTER);
+        editScreenChoice.setSpacing(70);
+        Scene editOptionScene = new Scene(editScreenChoice, Color.DARKSEAGREEN);
+
+        //create edit magazine scene
+        Label editMagazineName = new Label("Magazine Name:");
+        editMagazineName.setFont(Font.font("Verdana", 16));
+        TextField editMagazineNameField = new TextField();
+        Label editMagazineCost = new Label("Magazine Weekly Cost:");
+        editMagazineCost.setFont(Font.font("Verdana", 16));
+        TextField editMagazineCostField = new TextField();
+        HBox editMagazienNameLevel = new HBox(editMagazineName,editMagazineNameField);
+        editMagazienNameLevel.setSpacing(70);
+        HBox editMagazieCostLevel = new HBox(editMagazineCost,editMagazineCostField);
+        editMagazieCostLevel.setSpacing(30);
+        Button saveMagzineChanges = new Button("Save Changes");
+        saveMagzineChanges.setMinSize(100,100);
+        Button exitMagazineChanges = new Button("Exit to main screen");
+        exitMagazineChanges.setMinSize(100,100);
+        HBox editMagazineButtonLevel = new HBox(saveMagzineChanges,exitMagazineChanges);
+        editMagazineButtonLevel.setSpacing(30);
+        editMagazineButtonLevel.setAlignment(Pos.CENTER_LEFT);
+        VBox editMagazineRoot = new VBox(editMagazienNameLevel, editMagazieCostLevel, editMagazineButtonLevel);
+        editMagazineRoot.setSpacing(30);
+        editMagazineRoot.setAlignment(Pos.CENTER_LEFT);
+        Scene editMagazineScene = new Scene(editMagazineRoot);
+
+
+        //create edit supplement scene
+        Label supplementEditMsg = new Label("Supplement Edit Screen");
+        supplementEditMsg.setFont(Font.font("Verdana", 20));
+
+        ChoiceBox<Supplement> supplementEditChoice = new ChoiceBox<>(supplementList);
+        Button loadSupplementChoice = new Button("Load Supplement Data");
+        loadSupplementChoice.setMinSize(100,100);
+        HBox supplementChoiceLevel = new HBox(supplementEditChoice, loadSupplementChoice);
+        supplementChoiceLevel.setSpacing(30);
+
+        Label editSupplementName = new Label("Supplement Name:");
+        editSupplementName.setFont(Font.font("Verdana", 16));
+        TextField editSupplementNameField = new TextField();
+        Label editSupplementCost = new Label("Supplement Weekly Cost:");
+        editSupplementCost.setFont(Font.font("Verdana", 16));
+        TextField editSupplementCostField = new TextField();
+        HBox editSupplementNameLevel = new HBox(editSupplementName,editSupplementNameField);
+        editSupplementNameLevel.setSpacing(70);
+        HBox editSupplementCostLevel = new HBox(editSupplementCost,editSupplementCostField);
+        editSupplementCostLevel.setSpacing(30);
+
+        Button saveSupplementChanges = new Button("Save Changes");
+        saveSupplementChanges.setMinSize(100,100);
+        Button deleteSupplement = new Button("Delete Supplement Selected");
+        deleteSupplement.setMinSize(100,100);
+        Button exitSupplementChanges = new Button("Exit to main screen");
+        exitSupplementChanges.setMinSize(100,100);
+        HBox editSupplementButtonLevel = new HBox(saveSupplementChanges,deleteSupplement, exitSupplementChanges);
+        editSupplementButtonLevel.setSpacing(50);
+        editSupplementButtonLevel.setAlignment(Pos.CENTER_LEFT);
+
+
+        VBox editSupplementRoot = new VBox(supplementEditMsg, supplementChoiceLevel, editSupplementNameLevel, editSupplementCostLevel, editSupplementButtonLevel);
+        editSupplementRoot.setSpacing(30);
+        editSupplementRoot.setAlignment(Pos.CENTER_LEFT);
+        Scene editSupplementScene = new Scene(editSupplementRoot);
+
+
+        //create edit customer scene
+        Label customerEditMsg = new Label("Customer Edit Screen");
+        customerEditMsg.setFont(Font.font("Verdana", 20));
+
+        ChoiceBox<Customer> customerEditChoice = new ChoiceBox<>(customersList);
+        Button loadCustomerChoice = new Button("Load Customer Data");
+        loadCustomerChoice.setMinSize(100,100);
+        HBox customerChoiceLEvel = new HBox(customerEditChoice, loadCustomerChoice);
+        customerChoiceLEvel.setSpacing(30);
+
+        Label editCustomerName = new Label("Customer Name");
+        TextField editCustomerNameField = new TextField("");
+        Label editCustomerAddress = new Label("Customer Address:");
+        Label editCustomerStreetNumber = new Label("Street Number");
+        TextField editCustomerStreetNumberField = new TextField("");
+        Label editCustomerStreetName = new Label("Street Name");
+        TextField editCustomerStreetNameField = new TextField("");
+        Label editCustomerStateName = new Label("State Name");
+        TextField editCustomerStateNameField = new TextField("");
+        Label editCustomerPostalCode = new Label("Postal Code");
+        TextField editCustomerPostalCodeField = new TextField("");
+        Label editCustomerEmail = new Label("Email Address");
+        TextField editCustomerEmailField = new TextField("");
+        Label editCustomerType = new Label("Customer Type = ");
+
+        Button editCustomerSaveButton = new Button("Save Changes");
+        Button editCustomerDeleteButton = new Button("Delete Customer Selected");
+        Button editCustomerExitButton = new Button("Back to Main Screen");
+        HBox editCustomerButtonLevel = new HBox(editCustomerSaveButton,editCustomerDeleteButton, editCustomerExitButton);
+        editCustomerButtonLevel.setSpacing(50);
+        editCustomerButtonLevel.setAlignment(Pos.CENTER_LEFT);
+
+        HBox editCustomerNameLevel = new HBox(editCustomerName,editCustomerNameField);
+        editCustomerNameLevel.setSpacing(30);
+        HBox editStreetNumberLevel = new HBox(editCustomerStreetNumber,editCustomerStreetNumberField);
+        editStreetNumberLevel.setSpacing(40);
+        HBox editStreetNameLevel = new HBox(editCustomerStreetName,editCustomerStreetNameField);
+        editStreetNameLevel.setSpacing(52);
+        HBox editStateNameLevel = new HBox(editCustomerStateName,editCustomerStateNameField);
+        editStateNameLevel.setSpacing(55);
+        HBox editPostalCodeLevel = new HBox(editCustomerPostalCode,editCustomerPostalCodeField);
+        editPostalCodeLevel.setSpacing(55);
+        HBox editCustomerEmailLevel = new HBox(editCustomerEmail,editCustomerEmailField);
+        editCustomerEmailLevel.setSpacing(44);
 
 
 
+        VBox editCustomerSequence=new VBox(customerEditMsg,customerChoiceLEvel, editCustomerNameLevel, editCustomerAddress, editStreetNumberLevel, editStreetNameLevel,
+                editStateNameLevel,  editPostalCodeLevel, editCustomerEmailLevel, editCustomerType, editCustomerButtonLevel);
+        editCustomerSequence.setSpacing(20);
+        //editCustomerSequence.getChildren().add(customerSequence);
+        Scene editCustomerScene = new Scene(editCustomerSequence,400,400, Color.DARKSEAGREEN);
+
+        //loadCustomerChoice
+        loadCustomerChoice.setOnMouseClicked(event -> {
+            for(int i = 0; i<magazine.getListOfPayingCustomer().size(); i++) {
+                if (magazine.getListOfPayingCustomer().get(i) == customerEditChoice.getValue()) {
+                    System.out.println("Customer entry found");
+                    customerEditMsg.setText("Paying Customer Data Loaded");
+                    editCustomerNameField.setText(magazine.getListOfPayingCustomer().get(i).getCustomerName());
+                    editCustomerStreetNumberField.setText(""+magazine.getListOfPayingCustomer().get(i).getStreetName());
+                    editCustomerStreetNameField.setText(magazine.getListOfPayingCustomer().get(i).getStreetName());
+                    editCustomerStateNameField.setText(magazine.getListOfPayingCustomer().get(i).getCountryState());
+                    editCustomerPostalCodeField.setText(""+magazine.getListOfPayingCustomer().get(i).getPostalCode());
+                    editCustomerEmailField.setText(magazine.getListOfPayingCustomer().get(i).getCustomerEmail());
+                    editCustomerType.setText("Customer Type = Paying Customer");
+                    System.out.println("Customer loaded");
+                    break;
+                }
+                else{
+                    for(int j=0; j<magazine.getListOfPayingCustomer().get(i).getListOfAssociateCustomer().size(); j++){
+                        if(magazine.getListOfPayingCustomer().get(i).getListOfAssociateCustomer().get(j) == customerEditChoice.getValue()){
+                            System.out.println("Customer entry found");
+                            customerEditMsg.setText("Associate Customer Data Loaded");
+                            editCustomerNameField.setText(magazine.getListOfPayingCustomer().get(i).getListOfAssociateCustomer().get(j).getCustomerName());
+                            editCustomerStreetNumberField.setText(""+magazine.getListOfPayingCustomer().get(i).getListOfAssociateCustomer().get(j).getStreetName());
+                            editCustomerStreetNameField.setText(magazine.getListOfPayingCustomer().get(i).getListOfAssociateCustomer().get(j).getStreetName());
+                            editCustomerStateNameField.setText(magazine.getListOfPayingCustomer().get(i).getListOfAssociateCustomer().get(j).getCountryState());
+                            editCustomerPostalCodeField.setText(""+magazine.getListOfPayingCustomer().get(i).getListOfAssociateCustomer().get(j).getPostalCode());
+                            editCustomerEmailField.setText(magazine.getListOfPayingCustomer().get(i).getListOfAssociateCustomer().get(j).getCustomerEmail());
+                            editCustomerType.setText("Customer Type = Associate Customer");
+                            System.out.println("Customer loaded");
+                            break;
+                        }
+                    }
+                }
+            }
+        });
+        //editCustomerSaveButton
+        //editCustomerDeleteButton
+        //editCustomerExitButton
+
+        editCustomer.setOnMouseClicked(event -> {
+            stage.setScene(editCustomerScene);
+        });
+
+        editSupplement.setOnMouseClicked(event -> {
+            stage.setScene(editSupplementScene);
+        });
+
+        loadSupplementChoice.setOnMouseClicked(event -> {
+            for(int i = 0; i<magazine.getListOfSupplementMagazines().size(); i++) {
+                if (magazine.getListOfSupplementMagazines().get(i) == supplementEditChoice.getValue()) {
+                    System.out.println("Supplement entry found");
+                    System.out.println("Supplement current name = " + magazine.getListOfSupplementMagazines().get(i).getNameOfSupplement());
+                    System.out.println("Supplement current cost = " + magazine.getListOfSupplementMagazines().get(i).getWeeklyCostOfSupplement());
+                    editSupplementNameField.setText(magazine.getListOfSupplementMagazines().get(i).getNameOfSupplement());
+                    editSupplementCostField.setText("" + magazine.getListOfSupplementMagazines().get(i).getWeeklyCostOfSupplement());
+                    System.out.println("Supplement loaded");
+                    supplementEditMsg.setText("Supplement Data Loaded");
+                }
+            }
+        });
+
+        saveSupplementChanges.setOnMouseClicked(event -> {
+            int result = findSupplement(editSupplementNameField, editSupplementCostField,  supplementEditChoice);
+            if(result>-1){
+                saveSupplementData(result, editSupplementNameField, editSupplementCostField, supplementEditChoice);
+                supplementEditMsg.setText("Supplement Changes Saved");
+            }else{
+                event.consume();
+            }
+        });
+
+        deleteSupplement.setOnMouseClicked(event -> {
+            Alert deleteSupplementAlert = new Alert(Alert.AlertType.CONFIRMATION);
+            deleteSupplementAlert.setTitle("Delete Supplement data");
+            deleteSupplementAlert.setHeaderText("Do you want to delete selected supplement data?");
+            //alert.setContentText("Do you want to save before exiting?");
+
+            if (deleteSupplementAlert.showAndWait().get() == ButtonType.OK){
+                int result = findSupplement(editSupplementNameField, editSupplementCostField,  supplementEditChoice);
+                if(result>-1){
+                    deleteSupplementData(result, editSupplementNameField, editSupplementCostField, supplementEditChoice);
+                    clearSupplementEditField(editSupplementNameField, editSupplementCostField, supplementEditChoice);
+                    extractSupplementList(supplementList);
+                    supplementEditMsg.setText("Supplement Deleted");
+                }else{
+                    event.consume();
+                    supplementEditMsg.setText("Deletion did not occur");
+                }
+            }else{
+                supplementEditMsg.setText("Deletion Cancelled");
+                event.consume();
+            }
+        });
+
+        exitSupplementChanges.setOnMouseClicked(event -> {
+            clearSupplementEditField(editSupplementNameField, editSupplementCostField, supplementEditChoice);
+            stage.setScene(viewScene);
+        });
+
+        saveMagzineChanges.setOnMouseClicked(event -> {
+            magazine.setNameOfMagazine(editMagazineNameField.getText());
+            magazine.setWeeklyCostOfMagazine(Integer.parseInt(editMagazineCostField.getText()));
+            header.setText("Magazine Name = " + magazine.getNameOfMagazine() + ".\nWeekly cost of magazine = " + magazine.getWeeklyCostOfMagazine());
+            //stage.setScene(editMagazineScene);
+        });
+
+        exitMagazineChanges.setOnMouseClicked(event -> {
+            stage.setScene(viewScene);
+        });
+
+        editMagazine.setOnMouseClicked(event -> {
+            editMagazineNameField.setText(magazine.getNameOfMagazine());
+            editMagazineCostField.setText(String.valueOf(magazine.getWeeklyCostOfMagazine()));
+            stage.setScene(editMagazineScene);
+        });
 
         loadSavedData.setOnMouseClicked(event -> {
             Alert loadAlert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -426,7 +671,7 @@ public class Client extends Application {
                 loadData();
                 //saveData();
                 extractSupplementList(supplementList);
-                extractCustomerList(customersList);
+                extractCustomerList(customersList,payingCustomersList);
                 stage.setScene(viewScene); //switch scene once data loaded
                 System.out.println("Name of magazine from top = " + magazine.getNameOfMagazine()); //testing purpose, to test if it got pass back to the calling function
             }else{
@@ -462,6 +707,10 @@ public class Client extends Application {
             }
         });
 
+        edit.setOnMouseClicked(event -> {
+                stage.setScene(editOptionScene); //switch to "edit option" scene
+        });
+
         createMagazineSubmitButton.setOnMouseClicked(event -> {
             boolean toProceed = false;
             toProceed = createMagazineSubmit(labelToDisplayMsg, magazineNameField, magazineCostField);
@@ -471,7 +720,7 @@ public class Client extends Application {
                 System.out.println("Created magazine cost = " + magazine.getWeeklyCostOfMagazine());
 
                 extractSupplementList(supplementList);
-                extractCustomerList(customersList);
+                extractCustomerList(customersList,payingCustomersList);
                 stage.setScene(createSupplementScene);
             }else{
                 System.out.println("Proceed failed");
@@ -481,7 +730,6 @@ public class Client extends Application {
         backToLoadingScreenButton.setOnMouseClicked(event -> {
                 stage.setScene(loadingScene);
         });
-
 
         supplementSubmitAndAddButton.setOnMouseClicked(event -> {
             boolean toProceed = false;
@@ -521,7 +769,7 @@ public class Client extends Application {
         endCustomerAddition.setOnMouseClicked(event -> {
             clearCustomerField(customerCreationMsg, customerNameField, CustomerStreetNumberField,
                     customerStreetNameField,  customerStateNameField, customerPostalCodeField,  customerEmailField, supplementChoiceBox1,
-                    supplementChoiceBox2,  supplementChoiceBox3, supplementChoiceBox4, supplementChoiceBox5);
+                    supplementChoiceBox2,  supplementChoiceBox3, supplementChoiceBox4, supplementChoiceBox5,choiceOfPayingCustomerToAdd);
             stage.setScene(viewScene); //switch to "view" scene
         });
 
@@ -529,15 +777,15 @@ public class Client extends Application {
             boolean toProceed = false;
             toProceed = createCustomerSubmit(customerCreationMsg, customerNameField, CustomerStreetNumberField,
                      customerStreetNameField,  customerStateNameField, customerPostalCodeField,  customerEmailField, supplementChoiceBox1,
-                     supplementChoiceBox2,  supplementChoiceBox3, supplementChoiceBox4, supplementChoiceBox5, payingCustButton, associateCustButton);
+                     supplementChoiceBox2,  supplementChoiceBox3, supplementChoiceBox4, supplementChoiceBox5, payingCustButton, associateCustButton,choiceOfPayingCustomerToAdd);
             if(toProceed){
                 System.out.println("Proceed successful");
                 System.out.println("Created Customer name = " + customerNameField.getText());
                 System.out.println("Created Customer email = " + customerEmailField.getText());
-                extractCustomerList(customersList); //reload the list everytime there is addition
+                extractCustomerList(customersList,payingCustomersList); //reload the list everytime there is addition
                 clearCustomerField(customerCreationMsg, customerNameField, CustomerStreetNumberField,
                         customerStreetNameField,  customerStateNameField, customerPostalCodeField,  customerEmailField, supplementChoiceBox1,
-                        supplementChoiceBox2,  supplementChoiceBox3, supplementChoiceBox4, supplementChoiceBox5);
+                        supplementChoiceBox2,  supplementChoiceBox3, supplementChoiceBox4, supplementChoiceBox5,choiceOfPayingCustomerToAdd);
             }else{
                 System.out.println("Proceed failed");
             }
@@ -547,19 +795,23 @@ public class Client extends Application {
             boolean toProceed = false;
             toProceed = createCustomerSubmit(customerCreationMsg, customerNameField, CustomerStreetNumberField,
                     customerStreetNameField,  customerStateNameField, customerPostalCodeField,  customerEmailField, supplementChoiceBox1,
-                    supplementChoiceBox2,  supplementChoiceBox3, supplementChoiceBox4, supplementChoiceBox5, payingCustButton, associateCustButton);
+                    supplementChoiceBox2,  supplementChoiceBox3, supplementChoiceBox4, supplementChoiceBox5, payingCustButton, associateCustButton,choiceOfPayingCustomerToAdd);
             if(toProceed){
                 System.out.println("Proceed successful");
                 System.out.println("Created Customer name = " + customerNameField.getText());
                 System.out.println("Created Customer email = " + customerEmailField.getText());
-                extractCustomerList(customersList); //reload the list everytime a customer added
+                extractCustomerList(customersList,payingCustomersList); //reload the list everytime a customer added
                 clearCustomerField(customerCreationMsg, customerNameField, CustomerStreetNumberField,
                         customerStreetNameField,  customerStateNameField, customerPostalCodeField,  customerEmailField, supplementChoiceBox1,
-                        supplementChoiceBox2,  supplementChoiceBox3, supplementChoiceBox4, supplementChoiceBox5);
+                        supplementChoiceBox2,  supplementChoiceBox3, supplementChoiceBox4, supplementChoiceBox5,choiceOfPayingCustomerToAdd);
                 stage.setScene(viewScene);
             }else{
                 System.out.println("Proceed failed");
             }
+        });
+
+        refreshSelection.setOnMouseClicked(event -> {
+            choiceOfPayingCustomerToAdd.setValue(null);
         });
 
         createSupplement.setOnMouseClicked(event -> {
@@ -580,11 +832,55 @@ public class Client extends Application {
     }
 
 
+    private int findSupplement (TextField editSupplementNameField, TextField editSupplementCostField, ChoiceBox<Supplement> supplementEditChoice){
+        int positionOfSupplementFound = -1;
+        for(int i = 0; i<magazine.getListOfSupplementMagazines().size(); i++){
+            if(magazine.getListOfSupplementMagazines().get(i) == supplementEditChoice.getValue()){
+                positionOfSupplementFound = i;
+
+                System.out.println("Supplement change match found");
+            }
+        }
+        return positionOfSupplementFound;
+    }
+
+    private void saveSupplementData(int positionOfSupplementFound,TextField editSupplementNameField, TextField editSupplementCostField, ChoiceBox<Supplement> supplementEditChoice){
+        System.out.println("Supplement old name = " + magazine.getListOfSupplementMagazines().get(positionOfSupplementFound).getNameOfSupplement());
+        System.out.println("Supplement old cost = " + magazine.getListOfSupplementMagazines().get(positionOfSupplementFound).getWeeklyCostOfSupplement());
+        magazine.getListOfSupplementMagazines().get(positionOfSupplementFound).setNameOfSupplement(editSupplementNameField.getText());
+        magazine.getListOfSupplementMagazines().get(positionOfSupplementFound).setWeeklyCostOfSupplement(Integer.parseInt(editSupplementCostField.getText()));
+        System.out.println("Supplement change saved");
+        System.out.println("Supplement new name = " + magazine.getListOfSupplementMagazines().get(positionOfSupplementFound).getNameOfSupplement());
+        System.out.println("Supplement new cost = " + magazine.getListOfSupplementMagazines().get(positionOfSupplementFound).getWeeklyCostOfSupplement());
+    }
+
+    private void deleteSupplementData(int positionOfSupplementFound, TextField editSupplementNameField, TextField editSupplementCostField, ChoiceBox<Supplement> supplementEditChoice){
+        System.out.println("Supplement old name = " + magazine.getListOfSupplementMagazines().get(positionOfSupplementFound).getNameOfSupplement());
+        System.out.println("Supplement old cost = " + magazine.getListOfSupplementMagazines().get(positionOfSupplementFound).getWeeklyCostOfSupplement());
+        magazine.getListOfSupplementMagazines().remove(positionOfSupplementFound);
+        System.out.println("Supplement change removed");
+        try{
+            System.out.println("Supplement new name = " + magazine.getListOfSupplementMagazines().get(positionOfSupplementFound).getNameOfSupplement());
+            System.out.println("Supplement new cost = " + magazine.getListOfSupplementMagazines().get(positionOfSupplementFound).getWeeklyCostOfSupplement());
+        }catch (IndexOutOfBoundsException e){
+            System.out.println("No more item at this position, deleted item was at end of the line");
+        }
+    }
+
+
+    private void clearSupplementEditField (TextField editSupplementNameField, TextField editSupplementCostField, ChoiceBox<Supplement> supplementEditChoice) {
+        editSupplementNameField.setText("");
+        editSupplementCostField.setText("");
+        supplementEditChoice.setValue(null);
+    }
+
+
+
     private void clearCustomerField (Label msgToDisplay, TextField customerNameField, TextField CustomerStreetNumberField,
                                      TextField customerStreetNameField, TextField customerStateNameField,
                                      TextField customerPostalCodeField, TextField customerEmailField, ChoiceBox<Supplement> supplementChoiceBox1,
                                      ChoiceBox<Supplement> supplementChoiceBox2, ChoiceBox<Supplement> supplementChoiceBox3,
-                                     ChoiceBox<Supplement> supplementChoiceBox4, ChoiceBox<Supplement> supplementChoiceBox5) {
+                                     ChoiceBox<Supplement> supplementChoiceBox4, ChoiceBox<Supplement> supplementChoiceBox5,ChoiceBox<PayingCustomer> choiceOfPayingCustomerToAdd) {
         msgToDisplay.setText("");
         customerNameField.setText("");
         CustomerStreetNumberField.setText("");
@@ -598,6 +894,7 @@ public class Client extends Application {
         supplementChoiceBox3.setValue(null);
         supplementChoiceBox4.setValue(null);
         supplementChoiceBox5.setValue(null);
+        choiceOfPayingCustomerToAdd.setValue(null);
     }
 
     public boolean createCustomerSubmit (Label msgToDisplay, TextField customerNameField, TextField CustomerStreetNumberField,
@@ -605,7 +902,7 @@ public class Client extends Application {
                                          TextField customerPostalCodeField, TextField customerEmailField, ChoiceBox<Supplement> supplementChoiceBox1,
                                          ChoiceBox<Supplement> supplementChoiceBox2, ChoiceBox<Supplement> supplementChoiceBox3,
                                          ChoiceBox<Supplement> supplementChoiceBox4, ChoiceBox<Supplement> supplementChoiceBox5,
-                                         RadioButton payingCustButton, RadioButton associateCustButton) {
+                                         RadioButton payingCustButton, RadioButton associateCustButton, ChoiceBox<PayingCustomer> choiceOfPayingCustomerToAdd) {
         int streetNumber;
         int postalCode;
 
@@ -630,6 +927,10 @@ public class Client extends Application {
             }
             else if(customerEmailField.getText().trim().isEmpty()){
                 msgToDisplay.setText("Email Address cannot be empty");
+            }else if(associateCustButton.isSelected() && choiceOfPayingCustomerToAdd.getValue() == null){
+                msgToDisplay.setText("Paying Customer Selection cannot be empty when adding Associate Customer");
+            }else if(payingCustButton.isSelected() && choiceOfPayingCustomerToAdd.getValue() != null){
+                msgToDisplay.setText("Paying Customer Selection not required when adding new Paying Customer");
             }
             else{
                 //public PayingCustomer(String customerName, String customerEmail, Integer streetNumber, String streetName, String countryState, Integer postalCode, String paymentMethod) {
@@ -665,15 +966,19 @@ public class Client extends Application {
                                 new String("Paying"),tempSupplementList
                         ));
                     }else if(associateCustButton.isSelected()){
-                        magazine.getListOfPayingCustomer().get(0).getListOfAssociateCustomer().add(new associateCustomer(customerNameField.getText().trim(),
-                                customerEmailField.getText().trim(),
-                                streetNumber,
-                                customerStreetNameField.getText().trim(),
-                                customerStateNameField.getText().trim(),
-                                postalCode, tempSupplementList
-                        ));
+                        for(int i = 0; i<magazine.getListOfPayingCustomer().size(); i++){
+                            if(magazine.getListOfPayingCustomer().get(i) == choiceOfPayingCustomerToAdd.getValue()){
+                                System.out.println("Paying Customer Match found");
+                                magazine.getListOfPayingCustomer().get(0).getListOfAssociateCustomer().add(new associateCustomer(customerNameField.getText().trim(),
+                                        customerEmailField.getText().trim(),
+                                        streetNumber,
+                                        customerStreetNameField.getText().trim(),
+                                        customerStateNameField.getText().trim(),
+                                        postalCode, tempSupplementList
+                                ));
+                            }
+                        }
                     }
-
                 }
                 else{
                     if(payingCustButton.isSelected()){
@@ -686,13 +991,17 @@ public class Client extends Application {
                                 new String("Paying")
                         ));
                     }else if(associateCustButton.isSelected()){
-                        magazine.getListOfPayingCustomer().get(0).getListOfAssociateCustomer().add(new associateCustomer(customerNameField.getText().trim(),
-                                customerEmailField.getText().trim(),
-                                streetNumber,
-                                customerStreetNameField.getText().trim(),
-                                customerStateNameField.getText().trim(),
-                                postalCode
-                        ));
+                        for(int i = 0; i<magazine.getListOfPayingCustomer().size(); i++){
+                            if(magazine.getListOfPayingCustomer().get(i) == choiceOfPayingCustomerToAdd.getValue()){
+                                magazine.getListOfPayingCustomer().get(0).getListOfAssociateCustomer().add(new associateCustomer(customerNameField.getText().trim(),
+                                        customerEmailField.getText().trim(),
+                                        streetNumber,
+                                        customerStreetNameField.getText().trim(),
+                                        customerStateNameField.getText().trim(),
+                                        postalCode
+                                ));
+                            }
+                        }
                     }
                 }
                 return true;
@@ -826,22 +1135,23 @@ public class Client extends Application {
     }
 
 
-    private static void extractCustomerList(ObservableList<Customer> listOfCustomer){
+    private static void extractCustomerList(ObservableList<Customer> listOfCustomer, ObservableList<PayingCustomer> payingCustomersList){
         if(magazine.getListOfPayingCustomer().size() > 0){
             //empty the list first
             System.out.println("Clearing Customer ObservableList");
             listOfCustomer.clear();
+            payingCustomersList.clear();
             for(Customer customer: magazine.getListOfPayingCustomer()){
                 if(customer != null){
                     if(customer instanceof PayingCustomer){
                         listOfCustomer.add(customer);
+                        payingCustomersList.add((PayingCustomer) customer);
                         System.out.println(customer.getCustomerName());
                     }
                     if(customer instanceof PayingCustomer && ((PayingCustomer) customer).getListOfAssociateCustomer().size()>0){
                         listOfCustomer.addAll(((PayingCustomer) customer).getListOfAssociateCustomer());
                     }
                 }
-
             }
         }
     }
@@ -890,6 +1200,4 @@ public class Client extends Application {
             stage.close();
         }
     }
-
-
 }

@@ -49,7 +49,10 @@ public class associateCustomer extends Customer implements Serializable{
     public associateCustomer(String customerName, String customerEmail, Integer streetNumber, String streetName, String countryState, Integer postalCode, ArrayList<Supplement> customerInterestedSupplement) {
         super(customerName, customerEmail,streetNumber, streetName, countryState, postalCode,customerInterestedSupplement);
     }
-
+    @Override
+    public String toString() {
+        return this.getCustomerName();
+    }
     /**
      * Unit Testing for associate Customer Class
      */

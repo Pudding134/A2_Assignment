@@ -143,7 +143,10 @@ public class PayingCustomer extends Customer implements Serializable{
         }
         System.out.println(); //formatting purpose
     }
-
+    @Override
+    public String toString() {
+        return this.getCustomerName();
+    }
 
 
 
