@@ -254,14 +254,6 @@ public class Client extends Application {
                 }catch(NullPointerException e){
                     System.out.println("Nullpointer exception caught at customer change");
                 }
-
-                /*
-                    selectedItemProperty6.setText(currentCustomer.getCustomerInterestedSupplement().get(0).getNameOfSupplement());
-                    selectedItemProperty7.setText(currentCustomer.getCustomerInterestedSupplement().get(1).getNameOfSupplement());
-                    selectedItemProperty8.setText(currentCustomer.getCustomerInterestedSupplement().get(3).getNameOfSupplement());
-                    selectedItemProperty9.setText(currentCustomer.getCustomerInterestedSupplement().get(4).getNameOfSupplement());
-                    selectedItemProperty10.setText(currentCustomer.getCustomerInterestedSupplement().get(4).getNameOfSupplement());
-                */
             }});
         customersListView.setPrefHeight(348);
         customersListView.setPrefWidth(308);
@@ -361,6 +353,13 @@ public class Client extends Application {
         Label customerEmail = new Label("Email Address");
         TextField customerEmailField = new TextField("");
         //radio button for paying / associate
+        ToggleGroup customerTypeGroup = new ToggleGroup();
+        RadioButton payingCustButton = new RadioButton("Paying Customer");
+        payingCustButton.setToggleGroup(customerTypeGroup);
+        payingCustButton.setSelected(true);
+        RadioButton associateCustButton = new RadioButton("Associate Customer");
+        associateCustButton.setToggleGroup(customerTypeGroup);
+        HBox customerType = new HBox(payingCustButton, associateCustButton);
         //if paying then set visible for field of credit or debit? -> Another radio button
 
 
@@ -391,7 +390,7 @@ public class Client extends Application {
 
 
 
-        VBox customerSequence=new VBox(customerCreationMsg, customerNameLevel,CustomerAddress,  StreetNumberLevel, streetNameLevel, stateNameLevel, postalCodeLevel, customerEmailLevel, choiceOfSupplement,supplementChoiceOptions, customerSubmitAndAddButton,customerSubmitAndCompleteButton,endCustomerAddition);
+        VBox customerSequence=new VBox(customerCreationMsg, customerNameLevel,CustomerAddress,  StreetNumberLevel, streetNameLevel, stateNameLevel, postalCodeLevel, customerEmailLevel, choiceOfSupplement,supplementChoiceOptions, customerType, customerSubmitAndAddButton,customerSubmitAndCompleteButton,endCustomerAddition);
         customerSequence.setSpacing(25);
         createCustomerSceneObj.getChildren().add(customerSequence);
         Scene createCustomerScene = new Scene(createCustomerSceneObj,400,400, Color.DARKSEAGREEN);
@@ -530,7 +529,7 @@ public class Client extends Application {
             boolean toProceed = false;
             toProceed = createCustomerSubmit(customerCreationMsg, customerNameField, CustomerStreetNumberField,
                      customerStreetNameField,  customerStateNameField, customerPostalCodeField,  customerEmailField, supplementChoiceBox1,
-                     supplementChoiceBox2,  supplementChoiceBox3, supplementChoiceBox4, supplementChoiceBox5);
+                     supplementChoiceBox2,  supplementChoiceBox3, supplementChoiceBox4, supplementChoiceBox5, payingCustButton, associateCustButton);
             if(toProceed){
                 System.out.println("Proceed successful");
                 System.out.println("Created Customer name = " + customerNameField.getText());
@@ -548,7 +547,7 @@ public class Client extends Application {
             boolean toProceed = false;
             toProceed = createCustomerSubmit(customerCreationMsg, customerNameField, CustomerStreetNumberField,
                     customerStreetNameField,  customerStateNameField, customerPostalCodeField,  customerEmailField, supplementChoiceBox1,
-                    supplementChoiceBox2,  supplementChoiceBox3, supplementChoiceBox4, supplementChoiceBox5);
+                    supplementChoiceBox2,  supplementChoiceBox3, supplementChoiceBox4, supplementChoiceBox5, payingCustButton, associateCustButton);
             if(toProceed){
                 System.out.println("Proceed successful");
                 System.out.println("Created Customer name = " + customerNameField.getText());
@@ -605,7 +604,8 @@ public class Client extends Application {
                                          TextField customerStreetNameField, TextField customerStateNameField,
                                          TextField customerPostalCodeField, TextField customerEmailField, ChoiceBox<Supplement> supplementChoiceBox1,
                                          ChoiceBox<Supplement> supplementChoiceBox2, ChoiceBox<Supplement> supplementChoiceBox3,
-                                         ChoiceBox<Supplement> supplementChoiceBox4, ChoiceBox<Supplement> supplementChoiceBox5) {
+                                         ChoiceBox<Supplement> supplementChoiceBox4, ChoiceBox<Supplement> supplementChoiceBox5,
+                                         RadioButton payingCustButton, RadioButton associateCustButton) {
         int streetNumber;
         int postalCode;
 
@@ -655,24 +655,45 @@ public class Client extends Application {
                         tempSupplementList.add(supplementChoiceBox5.getValue());
                         System.out.println("Name of supplement 5 added = " + supplementChoiceBox5.getValue().getNameOfSupplement());
                     }
-                    magazine.getListOfPayingCustomer().add(new PayingCustomer(customerNameField.getText().trim(),
-                            customerEmailField.getText().trim(),
-                            streetNumber,
-                            customerStreetNameField.getText().trim(),
-                            customerStateNameField.getText().trim(),
-                            postalCode,
-                            new String("Paying"),tempSupplementList
-                    ));
+                    if(payingCustButton.isSelected()){
+                        magazine.getListOfPayingCustomer().add(new PayingCustomer(customerNameField.getText().trim(),
+                                customerEmailField.getText().trim(),
+                                streetNumber,
+                                customerStreetNameField.getText().trim(),
+                                customerStateNameField.getText().trim(),
+                                postalCode,
+                                new String("Paying"),tempSupplementList
+                        ));
+                    }else if(associateCustButton.isSelected()){
+                        magazine.getListOfPayingCustomer().get(0).getListOfAssociateCustomer().add(new associateCustomer(customerNameField.getText().trim(),
+                                customerEmailField.getText().trim(),
+                                streetNumber,
+                                customerStreetNameField.getText().trim(),
+                                customerStateNameField.getText().trim(),
+                                postalCode, tempSupplementList
+                        ));
+                    }
+
                 }
                 else{
-                    magazine.getListOfPayingCustomer().add(new PayingCustomer(customerNameField.getText().trim(),
-                            customerEmailField.getText().trim(),
-                            streetNumber,
-                            customerStreetNameField.getText().trim(),
-                            customerStateNameField.getText().trim(),
-                            postalCode,
-                            new String("Paying")
-                    ));
+                    if(payingCustButton.isSelected()){
+                        magazine.getListOfPayingCustomer().add(new PayingCustomer(customerNameField.getText().trim(),
+                                customerEmailField.getText().trim(),
+                                streetNumber,
+                                customerStreetNameField.getText().trim(),
+                                customerStateNameField.getText().trim(),
+                                postalCode,
+                                new String("Paying")
+                        ));
+                    }else if(associateCustButton.isSelected()){
+                        magazine.getListOfPayingCustomer().get(0).getListOfAssociateCustomer().add(new associateCustomer(customerNameField.getText().trim(),
+                                customerEmailField.getText().trim(),
+                                streetNumber,
+                                customerStreetNameField.getText().trim(),
+                                customerStateNameField.getText().trim(),
+                                postalCode
+                        ));
+                    }
                 }
                 return true;
             }
