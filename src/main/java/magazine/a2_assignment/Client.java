@@ -480,9 +480,12 @@ public class Client extends Application {
                 System.out.println("Created supplement name = " + supplementNameField.getText());
                 System.out.println("Created supplement name = " + supplementCostField.getText());
                 extractSupplementList(supplementList);
+                clearSupplementField(supplementCreationMsg, supplementNameField, supplementCostField);
+                /*
                 supplementNameField.setText("");
                 supplementCostField.setText("");
                 supplementCreationMsg.setText("Supplement added to list");
+                 */
             }else{
                 System.out.println("Proceed failed");
             }
@@ -497,7 +500,7 @@ public class Client extends Application {
                 System.out.println("Created supplement name = " + supplementCostField.getText());
 
                 extractSupplementList(supplementList);
-                //stage.setScene(createCustomerScene);
+                clearSupplementField(supplementCreationMsg, supplementNameField, supplementCostField);
                 stage.setScene(viewScene); //switch to "view" scene
             }else{
                 System.out.println("Proceed failed");
@@ -505,7 +508,7 @@ public class Client extends Application {
         });
 
         endSupplementAddition.setOnMouseClicked(event -> {
-            //stage.setScene(createCustomerScene); //switch to "create" scene
+            clearSupplementField(supplementCreationMsg, supplementNameField, supplementCostField);
             stage.setScene(viewScene); //switch to "view" scene
         });
 
@@ -694,7 +697,11 @@ public class Client extends Application {
         return false;
     }
 
-
+    private void clearSupplementField (Label msgToDisplay, TextField supplementNameField, TextField supplementCostField) {
+        supplementNameField.setText("");
+        supplementCostField.setText("");
+        msgToDisplay.setText("");
+    }
 
     public boolean createSupplementSubmit (Label msgToDisplay, TextField supplementNameField, TextField supplementCostField) {
         int supplementCost;
