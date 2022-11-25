@@ -1,6 +1,7 @@
 package magazine.a2_assignment;
 
 import javafx.application.Application;
+import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -358,6 +359,13 @@ public class Client extends Application {
         Button refreshSelection = new Button("Reset Paying Customer Choice");
         HBox payingCustomerAdditionLevel = new HBox(payingCustomerToAddUnder, choiceOfPayingCustomerToAdd, refreshSelection);
         payingCustomerAdditionLevel.setSpacing(15);
+        customerTypeGroup.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
+            @Override
+            public void changed(ObservableValue<? extends Toggle> observableValue, Toggle toggle, Toggle t1) {
+                payingCustomerAdditionLevel.visibleProperty().set(payingCustButton.isSelected());
+            }
+        });
+
         Button customerSubmitAndAddButton = new Button("Submit and Add ");
         Button customerSubmitAndCompleteButton = new Button("Submit and Complete Addition");
         Button endCustomerAddition = new Button("End Customer Addition");

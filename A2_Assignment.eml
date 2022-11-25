@@ -1,4 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<component jdk="17" jdk_type="JavaSDK">
-	<contentEntry url="file://$MODULE_DIR$"/>
+<component LANGUAGE_LEVEL="JDK_17" jdk="17" jdk_type="JavaSDK">
+	<output-test url="file://$MODULE_DIR$/target/test-classes"/>
+	<contentEntry url="file://$MODULE_DIR$/src"/>
+	<lib name="Maven: org.junit.jupiter:junit-jupiter-api:5.8.2" scope="TEST"/>
+	<lib name="Maven: org.opentest4j:opentest4j:1.2.0" scope="TEST"/>
+	<lib name="Maven: org.junit.platform:junit-platform-commons:1.8.2" scope="TEST"/>
+	<lib name="Maven: org.apiguardian:apiguardian-api:1.1.2" scope="TEST"/>
+	<lib name="Maven: org.junit.jupiter:junit-jupiter-engine:5.8.2" scope="TEST"/>
+	<lib name="Maven: org.junit.platform:junit-platform-engine:1.8.2" scope="TEST"/>
+	<levels>
+		<level name="Maven: org.openjfx:javafx-controls:17.0.2" value="project"/>
+		<level name="Maven: org.openjfx:javafx-controls:mac-aarch64:17.0.2" value="project"/>
+		<level name="Maven: org.openjfx:javafx-graphics:17.0.2" value="project"/>
+		<level name="Maven: org.openjfx:javafx-graphics:mac-aarch64:17.0.2" value="project"/>
+		<level name="Maven: org.openjfx:javafx-base:17.0.2" value="project"/>
+		<level name="Maven: org.openjfx:javafx-base:mac-aarch64:17.0.2" value="project"/>
+		<level name="Maven: org.openjfx:javafx-fxml:17.0.2" value="project"/>
+		<level name="Maven: org.openjfx:javafx-fxml:mac-aarch64:17.0.2" value="project"/>
+		<level name="Maven: org.junit.jupiter:junit-jupiter-api:5.8.2" value="project"/>
+		<level name="Maven: org.opentest4j:opentest4j:1.2.0" value="project"/>
+		<level name="Maven: org.junit.platform:junit-platform-commons:1.8.2" value="project"/>
+		<level name="Maven: org.apiguardian:apiguardian-api:1.1.2" value="project"/>
+		<level name="Maven: org.junit.jupiter:junit-jupiter-engine:5.8.2" value="project"/>
+		<level name="Maven: org.junit.platform:junit-platform-engine:1.8.2" value="project"/>
+	</levels>
 </component>
