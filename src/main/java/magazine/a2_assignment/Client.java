@@ -1,13 +1,10 @@
 package magazine.a2_assignment;
 
-
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -21,14 +18,18 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
-
 import java.io.*;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.ResourceBundle;
+
+/**
+ * @author  Willie Chong Wei Yi (williecwy134@gmail.com)
+ * @version 1.0
+ * @since   2022-Nov-21
+ */
 
 public class Client extends Application {
 
+    //global magazine created. As based on assumption, only 1 active magazine at any point of time.
     private static Magazine magazine = new Magazine();
 
     @Override
@@ -130,7 +131,6 @@ public class Client extends Application {
         Label selectedItemProperty9 = new Label();
         Label selectedItemProperty10 = new Label();
 
-
         selectedItemProperty1.setFont(Font.font("Verdana", 18));
         selectedItemProperty2.setFont(Font.font("Verdana", 18));
         selectedItemProperty3.setFont(Font.font("Verdana", 18));
@@ -144,7 +144,6 @@ public class Client extends Application {
         infoPanel.setAlignment(Pos.TOP_LEFT);
         infoPanel.setLayoutX(312);
         infoPanel.setLayoutY(100);
-
 
         //set up the List of supplement (Observable = it will update with changes - think of it as a pointer, reflecting with changes to original object)
         ObservableList<Supplement> supplementList = FXCollections.observableArrayList();
@@ -262,7 +261,6 @@ public class Client extends Application {
         customersListView.setOpacity(0.8);
         viewSceneObj.getChildren().add(customersListView); //add to viewSceneExclusive node
 
-
         //set up line to separate both list
         Line line3 = new Line();
         line3.setStartX(0.0);
@@ -285,8 +283,6 @@ public class Client extends Application {
         viewSceneObj.getChildren().add(line4);
 
 
-
-
         //setting up create magazine scene
         Group createMagazineSceneObj = new Group();
         //create scene with root node
@@ -302,7 +298,6 @@ public class Client extends Application {
         magazineNameLevel.setSpacing(56);
         HBox magazineCostLevel = new HBox(magazineCost, magazineCostField);
         magazineCostLevel.setSpacing(20);
-
         VBox createSequence=new VBox(labelToDisplayMsg, magazineNameLevel,magazineCostLevel, createMagazineSubmitButton,backToLoadingScreenButton);
         createSequence.setSpacing(40);
         createMagazineSceneObj.getChildren().add(createSequence);
@@ -325,14 +320,10 @@ public class Client extends Application {
         supplementNameLevel.setSpacing(56);
         HBox supplementCostLevel = new HBox(supplementCost, supplementCostField);
         supplementCostLevel.setSpacing(20);
-
         VBox supplementSequence=new VBox(supplementCreationMsg, supplementNameLevel,supplementCostLevel, supplementSubmitAndAddButton,supplementSubmitAndCompleteButton,endSupplementAddition);
         supplementSequence.setSpacing(40);
         createSupplementSceneObj.getChildren().add(supplementSequence);
         Scene createSupplementScene = new Scene(createSupplementSceneObj,400,400, Color.DARKSEAGREEN);
-
-
-
 
         //setting up create customer scene
         Group createCustomerSceneObj = new Group();
@@ -365,14 +356,11 @@ public class Client extends Application {
         ChoiceBox<PayingCustomer> choiceOfPayingCustomerToAdd = new ChoiceBox<>(payingCustomersList);
         Label payingCustomerToAddUnder = new Label("Paying Customer a/c (Associate Customer addition only)");
         Button refreshSelection = new Button("Reset Paying Customer Choice");
-
         HBox payingCustomerAdditionLevel = new HBox(payingCustomerToAddUnder, choiceOfPayingCustomerToAdd, refreshSelection);
         payingCustomerAdditionLevel.setSpacing(15);
-
         Button customerSubmitAndAddButton = new Button("Submit and Add ");
         Button customerSubmitAndCompleteButton = new Button("Submit and Complete Addition");
         Button endCustomerAddition = new Button("End Customer Addition");
-
         HBox customerNameLevel = new HBox(CustomerName,customerNameField);
         customerNameLevel.setSpacing(30);
         HBox StreetNumberLevel = new HBox(CustomerStreetNumber,CustomerStreetNumberField);
@@ -385,7 +373,6 @@ public class Client extends Application {
         postalCodeLevel.setSpacing(55);
         HBox customerEmailLevel = new HBox(customerEmail,customerEmailField);
         customerEmailLevel.setSpacing(44);
-
         Label choiceOfSupplement = new Label("Supplement customer subscribed to:");
         ChoiceBox<Supplement> supplementChoiceBox1 = new ChoiceBox<>(supplementList);
         ChoiceBox<Supplement> supplementChoiceBox2 = new ChoiceBox<>(supplementList);
@@ -393,9 +380,6 @@ public class Client extends Application {
         ChoiceBox<Supplement> supplementChoiceBox4 = new ChoiceBox<>(supplementList);
         ChoiceBox<Supplement> supplementChoiceBox5 = new ChoiceBox<>(supplementList);
         VBox supplementChoiceOptions = new VBox(supplementChoiceBox1, supplementChoiceBox2, supplementChoiceBox3, supplementChoiceBox4, supplementChoiceBox5);
-
-
-
         VBox customerSequence=new VBox(customerCreationMsg, customerNameLevel,CustomerAddress,  StreetNumberLevel, streetNameLevel, stateNameLevel, postalCodeLevel, customerEmailLevel, choiceOfSupplement,supplementChoiceOptions, customerType, payingCustomerAdditionLevel, customerSubmitAndAddButton,customerSubmitAndCompleteButton,endCustomerAddition);
         customerSequence.setSpacing(20);
         createCustomerSceneObj.getChildren().add(customerSequence);
@@ -413,19 +397,18 @@ public class Client extends Application {
         Scene createSupCustScene = new Scene(createScreenChoice, Color.DARKSEAGREEN);
 
 
-
-
         //create edit scene
         //create option scene to choose between editing - Magazine / supplement / Customer
         //create option screen (for use if user already create magazine - allow user to only choose create supplement or customer
         Button editMagazine = new Button("Magazine Edit");
-        editMagazine.setMinSize(200,200);
+        editMagazine.setMinSize(100,100);
         Button editSupplement = new Button("Supplement Edit");
-        editSupplement.setMinSize(200,200);
+        editSupplement.setMinSize(100,100);
         Button editCustomer = new Button("Customer Edit");
-        editCustomer.setMinSize(200,200);
-
-        HBox editScreenChoice = new HBox(editMagazine, editSupplement, editCustomer);
+        editCustomer.setMinSize(100,100);
+        Button editExit = new Button("Back to main screen");
+        editExit.setMinSize(100,100);
+        HBox editScreenChoice = new HBox(editMagazine, editSupplement, editCustomer, editExit);
         editScreenChoice.setAlignment(Pos.CENTER);
         editScreenChoice.setSpacing(70);
         Scene editOptionScene = new Scene(editScreenChoice, Color.DARKSEAGREEN);
@@ -457,13 +440,11 @@ public class Client extends Application {
         //create edit supplement scene
         Label supplementEditMsg = new Label("Supplement Edit Screen");
         supplementEditMsg.setFont(Font.font("Verdana", 20));
-
         ChoiceBox<Supplement> supplementEditChoice = new ChoiceBox<>(supplementList);
         Button loadSupplementChoice = new Button("Load Supplement Data");
         loadSupplementChoice.setMinSize(100,100);
         HBox supplementChoiceLevel = new HBox(supplementEditChoice, loadSupplementChoice);
         supplementChoiceLevel.setSpacing(30);
-
         Label editSupplementName = new Label("Supplement Name:");
         editSupplementName.setFont(Font.font("Verdana", 16));
         TextField editSupplementNameField = new TextField();
@@ -474,7 +455,6 @@ public class Client extends Application {
         editSupplementNameLevel.setSpacing(70);
         HBox editSupplementCostLevel = new HBox(editSupplementCost,editSupplementCostField);
         editSupplementCostLevel.setSpacing(30);
-
         Button saveSupplementChanges = new Button("Save Changes");
         saveSupplementChanges.setMinSize(100,100);
         Button deleteSupplement = new Button("Delete Supplement Selected");
@@ -484,8 +464,6 @@ public class Client extends Application {
         HBox editSupplementButtonLevel = new HBox(saveSupplementChanges,deleteSupplement, exitSupplementChanges);
         editSupplementButtonLevel.setSpacing(50);
         editSupplementButtonLevel.setAlignment(Pos.CENTER_LEFT);
-
-
         VBox editSupplementRoot = new VBox(supplementEditMsg, supplementChoiceLevel, editSupplementNameLevel, editSupplementCostLevel, editSupplementButtonLevel);
         editSupplementRoot.setSpacing(30);
         editSupplementRoot.setAlignment(Pos.CENTER_LEFT);
@@ -495,13 +473,11 @@ public class Client extends Application {
         //create edit customer scene
         Label customerEditMsg = new Label("Customer Edit Screen");
         customerEditMsg.setFont(Font.font("Verdana", 20));
-
         ChoiceBox<Customer> customerEditChoice = new ChoiceBox<>(customersList);
         Button loadCustomerChoice = new Button("Load Customer Data");
         loadCustomerChoice.setMinSize(100,100);
         HBox customerChoiceLEvel = new HBox(customerEditChoice, loadCustomerChoice);
         customerChoiceLEvel.setSpacing(30);
-
         Label editCustomerName = new Label("Customer Name");
         TextField editCustomerNameField = new TextField("");
         Label editCustomerAddress = new Label("Customer Address:");
@@ -516,14 +492,12 @@ public class Client extends Application {
         Label editCustomerEmail = new Label("Email Address");
         TextField editCustomerEmailField = new TextField("");
         Label editCustomerType = new Label("Customer Type = ");
-
         Button editCustomerSaveButton = new Button("Save Changes");
         Button editCustomerDeleteButton = new Button("Delete Customer Selected");
         Button editCustomerExitButton = new Button("Back to Main Screen");
         HBox editCustomerButtonLevel = new HBox(editCustomerSaveButton,editCustomerDeleteButton, editCustomerExitButton);
         editCustomerButtonLevel.setSpacing(50);
         editCustomerButtonLevel.setAlignment(Pos.CENTER_LEFT);
-
         HBox editCustomerNameLevel = new HBox(editCustomerName,editCustomerNameField);
         editCustomerNameLevel.setSpacing(30);
         HBox editStreetNumberLevel = new HBox(editCustomerStreetNumber,editCustomerStreetNumberField);
@@ -536,9 +510,6 @@ public class Client extends Application {
         editPostalCodeLevel.setSpacing(55);
         HBox editCustomerEmailLevel = new HBox(editCustomerEmail,editCustomerEmailField);
         editCustomerEmailLevel.setSpacing(44);
-
-
-
         VBox editCustomerSequence=new VBox(customerEditMsg,customerChoiceLEvel, editCustomerNameLevel, editCustomerAddress, editStreetNumberLevel, editStreetNameLevel,
                 editStateNameLevel,  editPostalCodeLevel, editCustomerEmailLevel, editCustomerType, editCustomerButtonLevel);
         editCustomerSequence.setSpacing(20);
@@ -579,13 +550,16 @@ public class Client extends Application {
             stage.setScene(viewScene);
         });
 
-
         editCustomer.setOnMouseClicked(event -> {
             stage.setScene(editCustomerScene);
         });
 
         editSupplement.setOnMouseClicked(event -> {
             stage.setScene(editSupplementScene);
+        });
+
+        editExit.setOnMouseClicked(event -> {
+            stage.setScene(viewScene);
         });
 
         loadSupplementChoice.setOnMouseClicked(event -> {
@@ -717,6 +691,7 @@ public class Client extends Application {
 
                 extractSupplementList(supplementList);
                 extractCustomerList(customersList,payingCustomersList);
+                header.setText("Magazine Name = " + magazine.getNameOfMagazine() + ".\nWeekly cost of magazine = " + magazine.getWeeklyCostOfMagazine());
                 stage.setScene(createSupplementScene);
             }else{
                 System.out.println("Proceed failed");
@@ -826,9 +801,6 @@ public class Client extends Application {
         stage.setScene(loadingScene);
         stage.show();
     }
-
-
-
 
     private void deleteCustomer (ChoiceBox<Customer> customerEditChoice){
         for(int i = 0; i<magazine.getListOfPayingCustomer().size(); i++) {
@@ -1043,6 +1015,13 @@ public class Client extends Application {
         choiceOfPayingCustomerToAdd.setValue(null);
     }
 
+    /**
+     * This method is check all the supplement data pass in from the text field for multiple criteria.
+     * IF criteria not fulfilled, respective error message will display on screen.
+     * Once criteria all fulfilled, change will be commited.
+     * <p>
+     * Precondition: Nil <br>
+     */
     public boolean createCustomerSubmit (Label msgToDisplay, TextField customerNameField, TextField CustomerStreetNumberField,
                                          TextField customerStreetNameField, TextField customerStateNameField,
                                          TextField customerPostalCodeField, TextField customerEmailField, ChoiceBox<Supplement> supplementChoiceBox1,
@@ -1168,6 +1147,16 @@ public class Client extends Application {
         msgToDisplay.setText("");
     }
 
+    /**
+     * This method is check all the supplement data pass in from the text field for multiple criteria.
+     * IF criteria not fulfilled, respective error message will display on screen.
+     * Once criteria all fulfilled, change will be commited.
+     * <p>
+     * Precondition: Nil <br>
+     * @param supplementCostField Text field containing user entered supplement weekly cost
+     * @param supplementNameField Text field containing user entered supplement name
+     * @param msgToDisplay Label on screen displaying the system notification message.
+     */
     public boolean createSupplementSubmit (Label msgToDisplay, TextField supplementNameField, TextField supplementCostField) {
         int supplementCost;
         try {
@@ -1187,7 +1176,7 @@ public class Client extends Application {
                 return true;
             }
         } catch (NumberFormatException e) {
-            msgToDisplay.setText("Enter only number in Magazine Cost Field");
+            msgToDisplay.setText("Enter only number in Supplement Cost Field");
         } catch (NullPointerException e){
             System.out.println("End of list adding");
         } catch (Exception e) {
@@ -1196,7 +1185,16 @@ public class Client extends Application {
         return false;
     }
 
-
+    /**
+     * This method is check all the magazine data pass in from the text field for multiple criteria.
+     * IF criteria not fulfilled, respective error message will display on screen.
+     * Once criteria all fulfilled, change will be commited.
+     * <p>
+     * Precondition: Nil <br>
+     * @param magazineCostField Text field containing user entered magazine weekly cost
+     * @param magazineNameField Text field containing user entered magazine name
+     * @param msgToDisplay Label on screen displaying the system notification message.
+     */
     public boolean createMagazineSubmit(Label msgToDisplay, TextField magazineNameField, TextField magazineCostField) {
         int magazineCost;
         try {
@@ -1220,11 +1218,6 @@ public class Client extends Application {
             msgToDisplay.setText("error");
         }
         return false;
-    }
-
-
-    public static void main(String[] args) {
-        launch();
     }
 
 
@@ -1269,7 +1262,12 @@ public class Client extends Application {
         //FinalListOfMagazine = listOfMagazine;
     }
 
-
+    /**
+     * This method is extract the supplement list from magazine object and update the observable list.
+     * <p>
+     * Precondition: Nil <br>
+     * @param listOfSupplement observable list of all supplement under magazine service
+     */
     private static void extractSupplementList(ObservableList<Supplement> listOfSupplement){
         if(magazine.getListOfSupplementMagazines().size() > 0){
             //empty the list first to avoid duplicate
@@ -1280,7 +1278,13 @@ public class Client extends Application {
         }
     }
 
-
+    /**
+     * This method is extract the customer list from magazine object and update the observable list.
+     * <p>
+     * Precondition: Nil <br>
+     * @param listOfCustomer observable list of all customer under magazine service
+     * @param payingCustomersList observable list of all paying customer under magazine service
+     */
     private static void extractCustomerList(ObservableList<Customer> listOfCustomer, ObservableList<PayingCustomer> payingCustomersList){
         if(magazine.getListOfPayingCustomer().size() > 0){
             //empty the list first
@@ -1325,14 +1329,16 @@ public class Client extends Application {
         }
     }
 
-
+    /**
+     * This method is create alerts warning user that closing procedures of program activated, whether to proceed.
+     * And if want to save data if proceed confirm.
+     * <p>
+     * Precondition: Nil <br>
+     */
     public void logout(Stage stage){
         Alert closeAlert = new Alert(Alert.AlertType.CONFIRMATION);
         closeAlert.setTitle("Logout");
         closeAlert.setHeaderText("You're about to logout! Do you want to proceed");
-        //closeAlert.setContentText("Do you want to save before exiting?");
-
-
 
         if (closeAlert.showAndWait().get() == ButtonType.OK){
             Alert saveAlert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -1345,5 +1351,9 @@ public class Client extends Application {
             System.out.println("You successfully logged out");
             stage.close();
         }
+    }
+
+    public static void main(String[] args) {
+        launch();
     }
 }
